@@ -75,12 +75,52 @@ var CANAUX = {
 };
 
 // ===================== POINTS D'ENTRÉE =====================
+
+/**
+ * Chiffres du tableau de bord, servis en JSON.
+ *
+ * kpi.html attend ces valeurs : elles sont calculées ici à partir de l'onglet
+ * Suivi, plutôt que relues dans les cellules du Tableau de bord — ainsi le
+ * chiffre est juste même si une formule n'a pas été recopiée sur les
+ * dernières lignes.
+ */
+function kpiJson_() {
+  var sh = sheet_(SHEET_SUIVI);
+  var n = Math.max(0, sh.getLastRow() - 1);
+  var idx = {};
+  for (var i = 0; i < HEADERS.length; i++) idx[HEADERS[i]] = i;
+
+  var c = { contacts: n, envoyes: 0, ouverts: 0, clics: 0, reponses: 0,
+            oui: 0, desinscriptions: 0, parCanal: {} };
+  if (!n) { c.genere = new Date().toISOString(); return c; }
+
+  var data = sh.getRange(2, 1, n, HEADERS.length).getValues();
+  for (var r = 0; r < data.length; r++) {
+    var ligne = data[r];
+    var g = function (titre) { return idx[titre] == null ? '' : ligne[idx[titre]]; };
+
+    if (g('Date envoi e-mail')) c.envoyes++;
+    if (g('Date ouverture e-mail')) c.ouverts++;
+    if (g('Date clic e-mail')) c.clics++;
+    if (g('Date réponse formulaire')) c.reponses++;
+    if (String(g('Intérêt')) === 'Oui') c.oui++;
+    if (String(g('Etat e-mail')).toLowerCase().indexOf('inscri') >= 0) c.desinscriptions++;
+
+    var canal = String(g('Canal') || 'Inconnu').trim() || 'Inconnu';
+    c.parCanal[canal] = (c.parCanal[canal] || 0) + 1;
+  }
+  c.genere = new Date().toISOString();
+  return c;
+}
+
 function doGet(e) {
   var p = (e && e.parameter) || {};
   if (p.k && p.k === CONFIG.TOKEN && p.action === 'kpi') {
-    var sh = sheet_(SHEET_SUIVI);
-    var n = Math.max(0, sh.getLastRow() - 1);
-    return json_({ ok: true, version: VERSION, contacts: n, onglets: [SHEET_SUIVI, SHEET_LOG, SHEET_KPI, SHEET_PARCOURS] });
+    var k = kpiJson_();
+    k.ok = true;
+    k.version = VERSION;
+    k.onglets = [SHEET_SUIVI, SHEET_LOG, SHEET_KPI, SHEET_PARCOURS];
+    return json_(k);
   }
   return json_({ ok: true, service: 'Régie Callo 2027', version: VERSION });
 }
