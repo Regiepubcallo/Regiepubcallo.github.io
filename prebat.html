@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pré-BAT valant pour BAT — Régie publicitaire Marcel Callo</title>
+<style>
+  :root{
+    --rouge:#E2001A; --bleu:#2B5C9E; --noir:#121212; --gris:#5A5A5A;
+    --trait:2.2px; --fond-doux:#F4F1EC;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Montserrat","Helvetica Neue",Arial,sans-serif;
+    background:#8b8b8b; color:var(--noir); -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+
+  /* ---------- Barre outil (écran seulement) ---------- */
+  .outil{max-width:210mm;margin:14px auto 0;background:#fff;padding:14px 16px;border:var(--trait) solid var(--noir)}
+  .outil h1{font-size:15px;margin:0 0 4px;letter-spacing:.02em}
+  .outil p{font-size:11.5px;margin:0 0 10px;color:var(--gris);line-height:1.45}
+  .drop{border:3px dashed var(--bleu);background:#EDF2F9;padding:16px;text-align:center;font-size:12px;font-weight:800;color:var(--bleu);cursor:pointer}
+  .drop.hover{background:#DCE7F5}
+  .ligne{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+  select,button{font-family:inherit;font-size:11.5px;font-weight:800;padding:7px 9px;border:2px solid var(--noir);background:#fff;cursor:pointer}
+  button{background:var(--rouge);color:#fff;border-color:var(--rouge);letter-spacing:.03em}
+  .nom-fichier{font-size:10.5px;color:var(--gris);font-weight:700}
+
+  /* ---------- Feuille A4 ---------- */
+  .feuille{
+    width:210mm;min-height:297mm;margin:14px auto;background:#fff;position:relative;
+    padding:9mm 10mm 6mm;display:flex;flex-direction:column;
+    box-shadow:0 6px 26px rgba(0,0,0,.45);
+  }
+  .feuille + .feuille{margin-top:10mm}
+
+  /* En-tête */
+  .tete{display:flex;align-items:center;gap:4.5mm;border-bottom:3px solid var(--noir);padding-bottom:2.8mm}
+  .tete img{width:18mm;height:18mm;object-fit:contain;flex:0 0 18mm}
+  .tete .tit{flex:1}
+  .sur{font-size:7.6pt;font-weight:800;letter-spacing:.16em;color:var(--gris);text-transform:uppercase}
+  .tete h2{margin:.4mm 0 0;font-size:16.5pt;line-height:1.0;font-weight:800;letter-spacing:-.02em;text-transform:uppercase}
+  .tete h2 em{font-style:normal;color:var(--rouge)}
+  .refbox{border:2.5px solid var(--noir);padding:2mm 3mm;font-size:8pt;font-weight:800;line-height:1.5;text-align:left;min-width:52mm}
+  .refbox b{display:block;font-size:6.6pt;letter-spacing:.13em;color:var(--gris);font-weight:800}
+  .bandeau-rouge{height:2.2mm;background:var(--rouge);margin:0 0 2.5mm}
+
+  /* Blocs */
+  .grille2{display:grid;grid-template-columns:1fr 1fr;gap:3.5mm}
+  .bloc{border:2.5px solid var(--noir);padding:2.4mm 3.2mm}
+  .bloc > h3{margin:0 0 2.2mm;font-size:8pt;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--gris);border-bottom:1.6px solid #ccc;padding-bottom:1.4mm}
+  .kv{font-size:8.6pt;line-height:1.35}
+  .kv div{display:flex;justify-content:space-between;gap:3mm;border-bottom:.6px dotted #bbb;padding:.35mm 0}
+  .kv span:first-child{color:var(--gris);font-weight:700;font-size:8pt}
+  .kv span:last-child{font-weight:800;text-align:right}
+
+  /* Tableau de contrôle */
+  .ctrl{margin-top:3mm}
+  .ctrl table{width:100%;border-collapse:collapse;table-layout:fixed}
+  .ctrl th{
+    background:var(--noir);color:#fff;font-size:7.4pt;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    padding:1.8mm 2mm;text-align:left;border-right:1.6px solid #fff
+  }
+  .ctrl td{border:1.6px solid var(--noir);padding:.85mm 1.8mm;font-size:8.4pt;vertical-align:middle;font-weight:700}
+  .ctrl td.et{width:11mm;text-align:center;padding:1mm}
+  .ctrl .pt{font-weight:800;font-size:8.6pt;line-height:1.2}
+  .ctrl .at{color:var(--gris);font-size:7.2pt;font-weight:700;line-height:1.3;margin-top:.5mm}
+  .ctrl .co{font-weight:600;font-size:7.1pt;line-height:1.28}
+  .ctrl td.at{color:var(--gris);font-weight:700;font-size:7.8pt}
+  .ctrl td.mes{font-weight:800;font-size:8.8pt;line-height:1.25}
+  .pastille{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:7mm;height:7mm;border:2.5px solid var(--noir);font-size:11pt;font-weight:800;line-height:1
+  }
+  .ok{background:#1E7A3C;color:#fff;border-color:#1E7A3C}
+  .ko{background:var(--rouge);color:#fff;border-color:var(--rouge)}
+  .warn{background:#F2B21B;color:#121212;border-color:#121212}
+
+  /* Bandeau verdict */
+  .verdict{margin-top:3mm;display:flex;align-items:center;gap:3.5mm;border:3.5px solid var(--noir);padding:2.4mm 3.5mm}
+  .verdict .ico{font-size:20pt;font-weight:800;line-height:1}
+  .verdict .txt{font-size:11pt;font-weight:800;letter-spacing:.02em;text-transform:uppercase;line-height:1.2}
+  .verdict .txt small{display:block;font-size:7.6pt;font-weight:800;letter-spacing:.06em;color:var(--gris);text-transform:none;margin-top:.8mm}
+  .verdict.ko{border-color:var(--rouge);background:#FDECEE}
+  .verdict.ko .ico,.verdict.ko .txt{color:var(--rouge)}
+  .verdict.ok{border-color:#1E7A3C;background:#EDF7F0}
+  .verdict.ok .ico,.verdict.ok .txt{color:#1E7A3C}
+
+  /* Visuel de contrôle */
+  .visuel{margin-top:3mm;display:grid;grid-template-columns:auto 1fr;gap:5mm;align-items:start}
+  .visuel > div:first-child{justify-self:start}
+  .cadre{border:2.5px solid var(--noir);padding:2mm;background:var(--fond-doux);position:relative;display:inline-block}
+  .cadre .img{display:block;background:#fff;background-image:linear-gradient(45deg,#eee 25%,transparent 25%,transparent 75%,#eee 75%),linear-gradient(45deg,#eee 25%,transparent 25%,transparent 75%,#eee 75%);background-size:8px 8px;background-position:0 0,4px 4px;object-fit:contain}
+  .cadre .leg{font-size:6.6pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gris);margin-top:1mm;text-align:center}
+  .cotes{border-left:2.5px solid var(--noir);padding-left:4mm}
+  .cote{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #ddd;padding:.7mm 0;font-size:8.4pt;font-weight:800}
+  .cote b{font-size:9.6pt;font-weight:800}
+  .cote .u{color:var(--gris);font-size:7.4pt;font-weight:700}
+
+  /* Planche kakemono */
+  .planche{margin-top:4mm;display:grid;grid-template-columns:1fr 74mm;gap:5mm;align-items:start}
+  .planche .note{font-size:8.2pt;line-height:1.55;font-weight:600}
+  .planche .note h4{margin:0 0 1.6mm;font-size:8pt;letter-spacing:.12em;text-transform:uppercase;color:var(--gris);font-weight:800}
+  .planche .note ul{margin:0 0 2.5mm;padding-left:4mm}
+  .planche .note li{margin-bottom:1.2mm}
+  .encart-plan{border:2.5px solid var(--noir);padding:2mm;background:var(--fond-doux)}
+  .encart-plan svg{display:block;width:100%;height:auto}
+
+  /* Pictogrammes dessinés : aucun caractère hors Montserrat */
+  svg.gi{display:block;margin:0 auto;width:3.4mm;height:3.4mm}
+  svg.gi path{fill:none;stroke:currentColor;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+  .pastille svg.gi{width:3.6mm;height:3.6mm}
+  .verdict .ico svg.gi{width:7.5mm;height:7.5mm;margin:0}
+  .gw{font-size:10.5pt;font-weight:800;line-height:1;font-family:inherit}
+
+  /* Bloc placement (encart) */
+  .placement{margin-top:2.5mm;border:2.5px solid var(--noir);border-left:5px solid var(--rouge);
+    padding:1.8mm 3mm;background:var(--fond-doux)}
+  .placement .t{font-size:7.2pt;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rouge);margin-bottom:.8mm}
+  .placement .c{font-size:8.2pt;font-weight:700;line-height:1.38}
+
+  /* Bon pour accord */
+  .bpa{margin-top:auto;padding-top:3mm}
+  .bpa .titre{display:flex;align-items:center;gap:3mm;border-bottom:3px solid var(--rouge);padding-bottom:1.4mm;margin-bottom:2mm}
+  .bpa .titre .num{background:var(--rouge);color:#fff;font-size:11pt;font-weight:800;width:8mm;height:8mm;display:flex;align-items:center;justify-content:center}
+  .bpa .titre h3{margin:0;font-size:11.5pt;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+  .bpa .consigne{font-size:8pt;font-weight:700;line-height:1.4;margin:0 0 1.8mm;padding:1.7mm 2.8mm;background:var(--fond-doux);border-left:4px solid var(--noir)}
+  .bpa .consigne b{font-weight:800}
+  .sign{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+  .sign .case{border:2.5px solid var(--noir);height:19.5mm;position:relative;padding:2mm}
+  .sign .case .lab{font-size:7pt;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gris)}
+  .sign .case .manuscrit{font-size:7.4pt;font-weight:700;color:#aaa;font-style:italic;margin-top:1.2mm}
+
+  /* Signature électronique (écran) */
+  .case .pad{display:block;width:100%;height:11.5mm;touch-action:none;cursor:crosshair;background:transparent}
+  .pad-btns{display:flex;gap:3px;justify-content:flex-end;margin-top:.4mm}
+  .pad-btns button{font-family:inherit;font-size:6.4pt;padding:.8mm 2mm;font-weight:800;
+    border:1.5px solid var(--noir);background:#fff;color:var(--noir);letter-spacing:.06em;cursor:pointer;text-transform:uppercase}
+  .sign-note{font-size:6.5pt;font-weight:800;color:#1E7A3C;margin-top:.8mm;line-height:1.25;font-style:normal}
+
+  /* Pied */
+  .pied{margin-top:3mm;border-top:2.5px solid var(--noir);padding-top:2mm;display:flex;justify-content:space-between;gap:5mm;font-size:6.8pt;font-weight:700;color:var(--gris);line-height:1.5}
+  .pied .g{max-width:128mm}
+  .pied b{color:var(--noir);font-weight:800}
+
+  /* ---------- Impression ---------- */
+  @page{size:A4 portrait;margin:0}
+  @media print{
+    body{background:#fff}
+    .outil,.avert,.pad-btns{display:none !important}
+    .feuille{margin:0;box-shadow:none;width:210mm;height:auto;min-height:0;overflow:visible}
+    .feuille + .feuille{page-break-before:always;break-before:page}
+  }
+  .avert{max-width:210mm;margin:0 auto 14px;font-size:11px;color:#fff;font-weight:700;line-height:1.5;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="outil" id="outil">
+  <h1>Contrôle automatique — Pré-BAT valant pour BAT</h1>
+  <p>Déposez le fichier de l'annonceur (PNG, JPG ou PDF) : le document de contrôle se remplit seul
+     — proportions, définition réelle à 300 dpi, fonds perdus, poids, verdict GO / NO-GO.</p>
+  <div class="drop" id="drop">DÉPOSEZ LE FICHIER ICI — ou cliquez pour parcourir</div>
+  <input type="file" id="file" accept=".png,.jpg,.jpeg,.pdf,.ai,.eps,.svg" hidden>
+  <div class="ligne">
+    <select id="fmt">
+      <option value="1/6">Encart 1/6 de page — 90 × 85 mm</option>
+      <option value="1/4" selected>Encart 1/4 de page — 90 × 130 mm</option>
+      <option value="1/2">Encart 1/2 page — 185 × 130 mm</option>
+      <option value="page">Page entière A4 — 210 × 297 mm</option>
+      <option value="logo_kakemono">Logo kakemono — 90 × 130 mm</option>
+    </select>
+    <button id="print">Imprimer / PDF</button>
+    <span class="nom-fichier" id="nf">aucun fichier</span>
+  </div>
+</div>
+<div class="avert" id="avert">Aperçu — document de travail généré automatiquement.</div>
+
+<div id="sortie"></div>
+
+<img id="logo-callo" src="logo_marcel_callo.png" alt="Marcel Callo" style="display:none">
+
+<script>
+/* =====================================================================
+   PRÉ-BAT VALANT POUR BAT — moteur de contrôle
+   Source de vérité : gabarits.json (version 2027.1)
+   ===================================================================== */
+const G = {
+  dpi: 300, dpiPlancher: 240, tolRatio: 1.5,
+  fondPerdu: 3, marge: 5, poidsMax: 20,
+  formats: {
+    "1/6": { libelle:"Encart 1/6 de page", mm:[90,85] },
+    "1/4": { libelle:"Encart 1/4 de page", mm:[90,130] },
+    "1/2": { libelle:"Encart 1/2 page", mm:[185,130] },
+    "page":{ libelle:"Page entière A4", mm:[210,297] },
+    "logo_kakemono": { libelle:"Logo kakemono 2027", mm:[90,130] }
+  },
+  kak: { support:[850,2000], marge:30, gouttiere:20, grille:{cols:5, rows:8}, table:800, oeil:1500, distance:3000 }
+};
+const mm2px = (mm, dpi=300) => Math.round(mm / 25.4 * dpi);
+const fmtFR = (n, d=0) => n.toLocaleString('fr-FR', {minimumFractionDigits:d, maximumFractionDigits:d});
+const dateFR = d => d.toLocaleDateString('fr-FR', {day:'2-digit', month:'long', year:'numeric'});
+
+/* ---------- État courant ---------- */
+let ETAT = { format:"1/4", fichier:null, w:0, h:0, octets:0, mime:"", dataurl:null, pdf:false };
+
+/* ---------- Analyse ---------- */
+async function hashBuf(buf) {
+  try {
+    if (window.crypto && crypto.subtle && crypto.subtle.digest) {
+      const d = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(d)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (e) { /* file:// n'est pas un contexte sécurisé : on retombe sur le repli */ }
+  const b = new Uint8Array(buf); let h1 = 0x811c9dc5, h2 = 0xcbf29ce4;
+  for (let i = 0; i < b.length; i++) { h1 = (h1 ^ b[i]) * 16777619 >>> 0; h2 = (h2 ^ b[i]) * 2166136261 >>> 0; }
+  return (h1.toString(16) + h2.toString(16)).padEnd(16, '0');
+}
+const B32 = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function refDepuisEmpreinte(h, salt) {
+  // mélange l'empreinte ENTIÈRE et le support : deux supports donnent
+  // deux références distinctes, le même fichier donne toujours la même.
+  const s = (h || '00000000') + '|' + (salt || '');
+  let a = 0x811c9dc5, b = 0x01000193;
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    a = Math.imul(a ^ c, 16777619) >>> 0;
+    b = (b + c * (i + 1)) >>> 0;
+  }
+  let out = '';
+  for (let i = 0; i < 6; i++) {
+    const v = ((a >>> (i * 3)) ^ (b >>> ((5 - i) * 3))) >>> 0;
+    out += B32[v % 32];
+  }
+  return out;
+}
+
+async function analyser(file) {
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  const vecteur = ['ai', 'eps', 'svg'].includes(ext);
+  const pdf = ext === 'pdf';
+  const buf = await file.arrayBuffer();
+  const hash = await hashBuf(buf);
+  ETAT = { ...ETAT, fichier: file, octets: file.size, mime: file.type || ext,
+           pdf, vecteur, hash, w: 0, h: 0, dataurl: null };
+  if (vecteur || pdf) return;                 // pas de pixels à mesurer
+  const url = URL.createObjectURL(new Blob([buf], { type: file.type || 'image/*' }));
+  await new Promise(res => {
+    const img = new Image();
+    img.onload = () => { ETAT.w = img.naturalWidth; ETAT.h = img.naturalHeight; ETAT.dataurl = url; res(); };
+    img.onerror = () => res();
+    img.src = url;
+  });
+}
+
+/* ---------- Calcul du contrôle ---------- */
+function controler() {
+  const f = G.formats[ETAT.format];
+  const [mmW, mmH] = f.mm;
+  const pxCibleW = mm2px(mmW), pxCibleH = mm2px(mmH);
+  const ratioCible = mmW / mmH;
+  const out = { mmW, mmH, pxCibleW, pxCibleH, ratioCible, lignes:[], verdict:'ok', motifs:[] };
+
+  // 1. Proportions
+  if (ETAT.vecteur || ETAT.pdf) {
+    const quoi = ETAT.vecteur ? 'fichier vectoriel' : 'PDF';
+    out.lignes.push({ k:'Proportions', att:`${mmW} × ${mmH} mm — ratio ${fmtFR(ratioCible,3)}`,
+      mes:`${quoi} — sans résolution fixe`, v:'warn',
+      d:`Un ${quoi} n'a pas de définition en pixels : le cadre, les proportions et les fonds perdus sont vérifiés visuellement par l'atelier.` });
+    out.lignes.push({ k:'Définition', att:`≥ ${G.dpi} dpi à la taille finale`,
+      mes: ETAT.vecteur ? 'vectoriel — conforme par nature' : 'PDF — images incluses à vérifier', v:'warn',
+      d: ETAT.vecteur
+        ? "Un vectoriel est indépendant de la résolution : il reste net à toute taille d'impression. Aucune reprise à prévoir."
+        : "Un PDF peut contenir des images matricielles : l'atelier vérifie la définition des images incluses." });
+    out.verdict = 'warn'; out.motifs.push("contrôle visuel de l'atelier");
+  } else if (ETAT.w) {
+    const r = ETAT.w / ETAT.h;
+    const ecart = Math.abs(r / ratioCible - 1) * 100;
+    const ok = ecart <= G.tolRatio;
+    out.lignes.push({ k:'Proportions', att:`${mmW} × ${mmH} mm — ratio ${fmtFR(ratioCible,3)}`,
+      mes:`${ETAT.w} × ${ETAT.h} px — ratio ${fmtFR(r,3)}`,
+      v: ok ? 'ok' : 'ko',
+      d: ok ? `Écart de ${fmtFR(ecart,2)} % : dans la tolérance de ${G.tolRatio} %. Le cadre est respecté.`
+            : `Écart de ${fmtFR(ecart,1)} % : le fichier n'a pas les proportions du format. Recadrage ou nouvelle exportation nécessaire.` });
+    if (!ok) { out.verdict = 'ko'; out.motifs.push('proportions non respectées'); }
+
+    // 2. Définition
+    const dpiL = ETAT.w / (mmW/25.4), dpiH = ETAT.h / (mmH/25.4);
+    const dpiEff = Math.min(dpiL, dpiH);
+    const dpiJuge = Math.round(dpiEff);   // tolérance d'arrondi du pixel entier (±0,5 dpi)
+    const v = dpiJuge >= G.dpi ? 'ok' : (dpiJuge >= G.dpiPlancher ? 'warn' : 'ko');
+    out.lignes.push({ k:'Définition', att:`≥ ${G.dpi} dpi à la taille finale — ${pxCibleW} × ${pxCibleH} px`,
+      mes:`${fmtFR(dpiEff)} dpi — ${ETAT.w} × ${ETAT.h} px`,
+      v, d: v==='ok' ? `Définition conforme : ${fmtFR(dpiEff)} dpi ≥ ${G.dpi} dpi. Impression nette garantie.`
+            : v==='warn' ? `Définition limite (${fmtFR(dpiEff)} dpi). Acceptable pour un aplat, insuffisant pour du texte fin et des logos. Reprise recommandée.`
+            : `Définition insuffisante : ${fmtFR(dpiEff)} dpi pour ${G.dpi} dpi exigés, soit ${fmtFR(ETAT.w)} px là où il en faut ${fmtFR(pxCibleW)}. Le visuel serait visiblement flou à l'impression.` });
+    if (v === 'ko') { out.verdict = 'ko'; out.motifs.push(`définition ${fmtFR(dpiEff)} dpi < 300`); }
+    if (v === 'warn' && out.verdict === 'ok') { out.verdict = 'warn'; out.motifs.push('définition limite'); }
+  }
+
+  // 3. Fonds perdus + marge de sécurité
+  out.lignes.push({ k:'Fonds perdus & marge de sécurité',
+    att:`${G.fondPerdu} mm de fond perdu · ${G.marge} mm de marge — zone utile ${mmW-2*G.marge} × ${mmH-2*G.marge} mm`,
+    mes:`gabarit ${mmW + 2*G.fondPerdu} × ${mmH + 2*G.fondPerdu} mm`,
+    v: 'warn',
+    d:`À vérifier sur le fichier de production : ${mm2px(mmW+6)} × ${mm2px(mmH+6)} px, aucun texte à moins de ${G.marge} mm du bord. Contrôle visuel de l'atelier.` });
+
+  // 5. Poids
+  const mo = ETAT.octets / 1048576;
+  const okP = mo <= G.poidsMax;
+  const poidsTxt = mo >= 1 ? fmtFR(mo,1) + ' Mo'
+    : (ETAT.octets >= 1024 ? fmtFR(ETAT.octets/1024) + ' Ko' : ETAT.octets + ' o');
+  const extTxt = (ETAT.fichier ? (ETAT.fichier.name.split('.').pop()||'').toUpperCase() : '—');
+  out.lignes.push({ k:'Poids & format', att:`≤ ${G.poidsMax} Mo`,
+    mes:`${poidsTxt} — ${extTxt}`, v: okP ? 'ok' : 'ko',
+    d: okP ? "Fichier reçu dans les limites du dépôt en ligne." : "Fichier trop lourd : compresser ou transmettre par lien." });
+  if (!okP) { out.verdict='ko'; out.motifs.push('fichier trop lourd'); }
+
+  return out;
+}
+
+/* ---------- Rendu ---------- */
+const GI = {
+  ok:  '<svg class="gi" viewBox="0 0 24 24"><path d="M4.5 12.8l4.8 4.8L19.6 7.2"/></svg>',
+  ko:  '<svg class="gi" viewBox="0 0 24 24"><path d="M6.2 6.2l11.6 11.6M17.8 6.2L6.2 17.8"/></svg>',
+  warn:'<span class="gw">!</span>'
+};
+function icone(v){ return [GI[v] || GI.warn, v]; }
+
+function rendre() {
+  const c = controler();
+  const f = G.formats[ETAT.format];
+  const support = ETAT.format === 'logo_kakemono' ? 'kakemono' : 'encart';
+  const ref = 'PB-2027-' + refDepuisEmpreinte(ETAT.hash, support);
+  const kakemono = ETAT.format === 'logo_kakemono';
+  const ko = c.verdict === 'ko';
+
+  const lignes = c.lignes.map(l => {
+    const [sym, cls] = icone(l.v);
+    return `<tr>
+      <td class="et"><span class="pastille ${cls}">${sym}</span></td>
+      <td style="width:27%"><div class="pt">${l.k}</div><div class="at">${l.att}</div></td>
+      <td class="mes" style="width:21%">${l.mes}</td>
+      <td class="co" style="width:45%">${l.d}</td>
+    </tr>`;
+  }).join('');
+
+  const apercu = ETAT.dataurl
+    ? `<img class="img" src="${ETAT.dataurl}" alt="visuel" style="max-width:62mm;max-height:28mm">`
+    : `<div class="img" style="width:52mm;height:38mm;display:flex;align-items:center;justify-content:center;font-size:8pt;font-weight:800;color:#888;text-align:center;padding:3mm">${ETAT.vecteur ? 'FICHIER VECTORIEL' : 'FICHIER PDF'}<br>contrôle visuel de l'atelier</div>`;
+
+  const verdictTxt = ko ? 'Refusé en l\'état — reprise demandée'
+                        : (c.verdict === 'warn' ? 'Accepté sous réserve — points à confirmer' : 'Conforme — bon pour fabrication');
+  const verdictIcone = ko ? GI.ko : (c.verdict === 'warn' ? GI.warn : GI.ok);
+  const verdictSub = ko
+    ? `Motif : ${c.motifs.join(' · ')}. Un nouveau Pré-BAT vous sera adressé après réception du fichier corrigé.`
+    : (c.verdict === 'warn'
+        ? "Contrôle visuel de l'atelier requis (vectoriel). Copie du fichier archivée sous cette référence."
+        : 'Aucune anomalie bloquante détectée sur ce fichier. Impression lancée après votre accord.');
+
+  document.getElementById('sortie').innerHTML = `
+  <div class="feuille" id="feuille1">
+    <div class="tete">
+      <img src="logo_marcel_callo.png" alt="Marcel Callo">
+      <div class="tit">
+        <div class="sur">${kakemono ? 'Kakemono 85 × 200 cm · Saison 2027' : "Encart L'Actualycée 2027 · Saison 2027"}</div>
+        <h2>Pré-BAT valant<br>pour <em>BAT</em></h2>
+      </div>
+      <div class="refbox">
+        <b>RÉFÉRENCE</b>${ref}
+        <b>ÉMIS LE</b>${dateFR(new Date())}
+        <b>DOCUMENT</b>1 / ${kakemono ? '2' : '1'}
+      </div>
+    </div>
+    <div class="bandeau-rouge"></div>
+
+    <div class="grille2">
+      <div class="bloc">
+        <h3>Annonceur</h3>
+        <div class="kv">
+          <div><span>Nom de l'entreprise</span><span>${(ETAT.fichier? 'ENTREPRISE EXEMPLE' : '—')}</span></div>
+          <div><span>Contact</span><span>—</span></div>
+          <div><span>Référence devis / BC</span><span>—</span></div>
+        </div>
+      </div>
+      <div class="bloc">
+        <h3>Publication contrôlée</h3>
+        <div class="kv">
+          <div><span>Support</span><span>${kakemono ? 'Kakemonos 2027' : "L'Actualycée 2027"}</span></div>
+          <div><span>Format</span><span>${f.libelle}</span></div>
+          <div><span>Fichier reçu</span><span style="max-width:44mm;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ETAT.fichier? ETAT.fichier.name : '—'}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctrl">
+      <div class="bloc" style="border:none;padding:0">
+        <h3 style="font-size:8.4pt;color:var(--noir);letter-spacing:.1em">Contrôles techniques effectués sur le fichier transmis</h3>
+        <table>
+          <thead><tr><th style="width:11mm;text-align:center">État</th><th>Point de contrôle / attendu</th><th>Mesuré</th><th>Constat de l'atelier</th></tr></thead>
+          <tbody>${lignes}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="verdict ${ko ? 'ko' : (c.verdict==='warn'?'':'ok')}" style="${c.verdict==='warn'?'border-color:#F2B21B;background:#FEF7E4':''}">
+      <div class="ico" style="${c.verdict==='warn'?'color:#B8860B':''}">${verdictIcone}</div>
+      <div class="txt" style="${c.verdict==='warn'?'color:#8A6508':''}">${verdictTxt}<small>${verdictSub}</small></div>
+    </div>
+
+    <div class="visuel">
+      <div>
+        <div class="cadre">${apercu}<div class="leg">Fichier contrôlé — ${f.libelle}</div></div>
+      </div>
+      <div class="cotes">
+        <div class="cote"><span>Dimensions du format</span><b>${c.mmW} × ${c.mmH} <span class="u">mm</span></b></div>
+        <div class="cote"><span>Définition exigée à 300 dpi</span><b>${fmtFR(c.pxCibleW)} × ${fmtFR(c.pxCibleH)} <span class="u">px</span></b></div>
+        <div class="cote"><span>Définition réelle du fichier</span><b>${ETAT.w? fmtFR(ETAT.w)+' × '+fmtFR(ETAT.h)+' <span class="u">px</span>' : '—  (vecteur)'}</b></div>
+        <div class="cote"><span>Densité équivalente</span><b>${ETAT.w? fmtFR(Math.min(ETAT.w/(c.mmW/25.4), ETAT.h/(c.mmH/25.4)))+' <span class="u">dpi</span>' : '—'}</b></div>
+        <div class="cote"><span>Fonds perdus</span><b>${G.fondPerdu} <span class="u">mm</span></b></div>
+        <div class="cote"><span>Marge de sécurité</span><b>${G.marge} <span class="u">mm</span></b></div>
+        <div class="cote"><span>Mode colorimétrique attendu</span><b>CMJN</b></div>
+      </div>
+    </div>
+
+    ${kakemono ? '' : `<div class="placement">
+      <div class="t">Votre emplacement sur la page</div>
+      <div class="c">Votre emplacement sur la place sera traité humainement par un professionnel veillant à
+      valoriser la visibilité et la cohérence graphique de la page où est présent votre encart.</div>
+    </div>`}
+
+    <div class="bpa">
+      <div class="titre"><div class="num"><svg class="gi" viewBox="0 0 24 24" style="width:4.4mm;height:4.4mm"><path d="M4.5 12.8l4.8 4.8L19.6 7.2" style="stroke:#fff"/></svg></div><h3>Bon pour accord — validation de l'annonceur</h3></div>
+      <p class="consigne">
+        <b>Sur papier : écrivez à la main « Bon pour accord », datez et signez. Sur écran : signez dans le cadre de droite.</b>
+        Sans cette mention et cette signature, ce Pré-BAT ne vaut pas BAT et la publication n'est pas lancée
+        (CGV art. 11.1 et 11.2). Une seule série de corrections est admise (art. 11.2).
+        <span style="color:var(--gris)">Signature simple au sens de l'article 26 du règlement eIDAS, admise comme preuve par l'article 22.1 des CGV. Le code par SMS reste l'étape suivante.</span>
+      </p>
+      <div class="sign">
+        <div class="case">
+          <div class="lab">Mention manuscrite obligatoire</div>
+          <div class="manuscrit">« Bon pour accord » — le … / … / 20…</div>
+          <div class="sign-note" id="sign-note"></div>
+        </div>
+        <div class="case">
+          <div class="lab">Signature de l'annonceur — écran ou papier</div>
+          <canvas class="pad" id="pad"></canvas>
+          <div class="pad-btns"><button type="button" id="pad-clear">Effacer</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pied">
+      <div class="g">
+        <b>Les professionnels des arts graphiques vérifieront la bonne intégration de vos éléments validés.</b>
+        Si toutefois une anomalie était constatée sur ce Pré-BAT, nous reviendrons vers vous à cet effet.
+        Contrôle réalisé selon l'annexe 2 (fiche technique type) et l'article 10.2 des CGV V2.3 du 02/11/2026 :
+        images 300 dpi à la taille finale, CMJN, fonds perdus 3 mm, marge de sécurité 5 mm.
+      </div>
+      <div style="text-align:right;white-space:nowrap">
+        OGEC Lycée Marcel Callo<br>SIRET 777 722 216 00010<br>Régie · +33 7 66 88 93 32<br>
+        <span style="font-size:6pt">Empreinte du fichier : ${(ETAT.hash||'—').slice(0,12)}</span>
+      </div>
+    </div>
+  </div>
+  ${kakemono ? feuillePlanche(ref) : ''}`;
+
+  document.getElementById('avert').textContent = ko
+    ? 'Aperçu — verdict : NON CONFORME. Ce document est un exemple de contrôle.'
+    : 'Aperçu — document de contrôle généré automatiquement.';
+  initPad();
+}
+
+/* ---------- Feuille 2 : implantation kakemono ---------- */
+function grilleCalc(cols, rows) {
+  const k = G.kak;
+  const W = k.support[0] - 2*k.marge, H = k.support[1] - 2*k.marge;
+  const cw = (W - (cols-1)*k.gouttiere) / cols;
+  const ch = (H - (rows-1)*k.gouttiere) / rows;
+  return { cols, rows, n: cols*rows, cw, ch, fw: 90/cw*100, fh: 130/ch*100 };
+}
+function feuillePlanche(ref) {
+  const echelles = [[4,6],[5,8],[6,8],[7,8]].map(([c,r]) => {
+    const g = grilleCalc(c,r);
+    let verdict, cls;
+    if (g.n <= 24) { verdict = 'Premium — impact maximal'; cls = 'ok'; }
+    else if (g.n <= 40) { verdict = 'Recommandé — équilibre tenu'; cls = 'ok'; }
+    else if (g.n <= 48) { verdict = 'Serré — acceptable, sans réserve'; cls = 'warn'; }
+    else { verdict = 'Limite — plus d\'air autour du logo'; cls = 'ko'; }
+    return {...g, verdict, cls};
+  });
+  const rows = echelles.map(g => `<tr>
+      <td class="mes" style="text-align:center">${g.cols} × ${g.rows}</td>
+      <td class="mes" style="text-align:center;font-size:11pt">${g.n}</td>
+      <td style="text-align:center">${fmtFR(g.cw)} × ${fmtFR(g.ch)} mm</td>
+      <td style="text-align:center">${Math.round(g.fw)} % / ${Math.round(g.fh)} %</td>
+      <td style="text-align:center">${g.n <= 40 ? 'confortable' : g.n <= 48 ? 'juste' : 'dense'}</td>
+      <td class="co">${g.verdict}</td>
+    </tr>`).join('');
+
+  return `
+  <div class="feuille" id="feuille2">
+    <div class="tete">
+      <img src="logo_marcel_callo.png" alt="Marcel Callo">
+      <div class="tit">
+        <div class="sur">Régie publicitaire · Saison 2027 · Démarche qualité</div>
+        <h2>Implantation kakemono<br><em>85 × 200 cm</em></h2>
+      </div>
+      <div class="refbox">
+        <b>RÉFÉRENCE</b>${ref}-K
+        <b>ÉMIS LE</b>${dateFR(new Date())}
+        <b>DOCUMENT</b>2 / 2
+      </div>
+    </div>
+    <div class="bandeau-rouge"></div>
+    ${plancheKakemono()}
+    <div class="ctrl" style="margin-top:5mm">
+      <div class="bloc" style="border:none;padding:0">
+        <h3 style="font-size:8.4pt;color:var(--noir);letter-spacing:.1em">Combien de logos tenir sur une face de 85 × 200 cm ?</h3>
+        <table>
+          <thead><tr><th style="text-align:center">Grille</th><th style="text-align:center">Logos</th><th style="text-align:center">Cellule</th><th style="text-align:center">Remplissage du logo 90 × 130</th><th style="text-align:center">Lecture à 3 m</th><th>Décision</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="verdict ok" style="margin-top:4mm">
+      <div class="ico">${GI.ok}</div>
+      <div class="txt">40 logos sur une seule face : cohérent
+        <small>Grille 5 × 8, cellule 142 × 225 mm, logo 90 × 130 mm occupant 63 % de la largeur et 58 % de la hauteur.
+        Le recto-verso n'apporte rien à 40 : il devient utile au-delà de 48 logos, ou pour séparer partenaires et
+        exposants sur deux familles d'événements.</small></div>
+    </div>
+    <div class="pied" style="margin-top:auto">
+      <div class="g">
+        Calculs établis sur : support 850 × 2000 mm, marge périphérique 30 mm, gouttière 20 mm, emplacement logo
+        90 × 130 mm (annexe 2), distance de lecture 3 000 mm. Angle sous-tendu par un logo de 90 mm à 3 m : 1,72°.
+        Seuil d'acuité visuelle à 3 m : 0,87 mm par minute d'arc ; un détail de 3 mm reste à 3,5 fois ce seuil.
+      </div>
+      <div style="text-align:right;white-space:nowrap">
+        OGEC Lycée Marcel Callo<br>SIRET 777 722 216 00010<br>Régie · +33 7 66 88 93 32
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Planche kakemono (page 2) ---------- */
+function plancheKakemono() {
+  const k = G.kak, [SW, SH] = k.support;
+  const W = 47, LEFT = 19, TOP = 2;          // mm sur le papier
+  const H = W * SH / SW;
+  const sx = W / SW;                          // mm papier par mm de support
+  const X = v => LEFT + v * sx, Y = v => TOP + v * sx;
+  const cols = k.grille.cols, rows = k.grille.rows;
+  const cw = ((SW - 2*k.marge) - (cols-1)*k.gouttiere) / cols;
+  const ch = ((SH - 2*k.marge) - (rows-1)*k.gouttiere) / rows;
+
+  let cells = '';
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const x = k.marge + c * (cw + k.gouttiere);
+    const y = k.marge + r * (ch + k.gouttiere);
+    cells += `<rect x="${X(x)}" y="${Y(y)}" width="${cw*sx}" height="${ch*sx}" fill="#fff" stroke="#121212" stroke-width="0.28"/>`;
+  }
+  // emplacement de l'annonceur : 1re case en haut à droite (position la plus vue)
+  const hx = k.marge + (cols-1) * (cw + k.gouttiere);
+  const hy = k.marge;
+  const cell = `<rect x="${X(hx)}" y="${Y(hy)}" width="${cw*sx}" height="${ch*sx}" fill="#E2001A"/>`;
+
+  const yTable = Y(SH - k.table), yOeil = Y(SH - k.oeil);
+  const fs = 2.9;
+  const lbl = (y, txt, col) => `
+      <line x1="1" y1="${y}" x2="${LEFT+W}" y2="${y}" stroke="${col}" stroke-width="0.45" stroke-dasharray="1.6 1.1"/>
+      <text x="${LEFT-1.5}" y="${y+1}" font-size="${fs}" font-weight="800" fill="${col}" text-anchor="end" font-family="Montserrat">${txt}</text>`;
+
+  return `
+  <div class="planche">
+    <div class="note">
+      <h4>Grille d'implantation — ${cols} × ${rows} = ${cols*rows} emplacements</h4>
+      <ul>
+        <li>Cellule de <b>${fmtFR(cw)} × ${fmtFR(ch)} mm</b>, gouttière ${k.gouttiere} mm, marge périphérique ${k.marge} mm.</li>
+        <li>Le logo <b>90 × 130 mm</b> centré dans sa cellule occupe ${Math.round(90/cw*100)} % de la largeur
+            et ${Math.round(130/ch*100)} % de la hauteur : assez d'air autour pour que chaque marque se détache.</li>
+        <li><b>Lisibilité à 3 m :</b> un logo de 90 mm de large sous-tend 1,72°, au-delà du seuil d'identification
+            d'une marque. Le mot-symbole interne (≈ 20 mm de hauteur de capitale) reste à 4,5 fois le seuil d'acuité.</li>
+        <li><b>Bande visible :</b> passé 80 cm du sol, le kakemono est souvent masqué par une table.
+            Les ${cols*rows} logos tiennent exactement dans la bande 80 → 200 cm.</li>
+        <li><b>Hauteur d'œil à 150 cm :</b> les emplacements du haut sont les plus vus — à réserver aux partenaires premium.</li>
+      </ul>
+      <p style="font-size:7.4pt;font-weight:800;margin:0 0 1.5mm">
+        <span style="display:inline-block;width:4mm;height:4mm;background:#E2001A;vertical-align:-1mm;margin-right:1.5mm"></span>
+        Emplacement de l'annonceur contrôlé
+      </p>
+      <p style="font-size:7pt;color:var(--gris);font-weight:700;margin:0">
+        Repères pointillés : <b style="color:#2B5C9E">150 cm</b> = hauteur d'œil ·
+        <b style="color:#E2001A">80 cm</b> = masquage par une table. Cotes de contrôle de l'atelier, non imprimées.
+      </p>
+    </div>
+    <div class="encart-plan">
+      <svg viewBox="0 0 ${LEFT+W+9} ${TOP+H+9}" xmlns="http://www.w3.org/2000/svg">
+        <rect x="${LEFT}" y="${TOP}" width="${W}" height="${H}" fill="#F4F1EC" stroke="#121212" stroke-width="0.8"/>
+        <rect x="${X(k.marge)}" y="${Y(k.marge)}" width="${(SW-2*k.marge)*sx}" height="${(SH-2*k.marge)*sx}" fill="#fff" stroke="#121212" stroke-width="0.45"/>
+        ${cells}
+        ${cell}
+        ${lbl(yTable, '80 cm', '#E2001A')}
+        ${lbl(yOeil, '150 cm', '#2B5C9E')}
+        <text x="${LEFT+W/2}" y="${TOP+H+6}" font-size="3.4" font-weight="800" text-anchor="middle" fill="#121212" font-family="Montserrat">85 cm</text>
+        <text x="${LEFT+W+5}" y="${TOP+H/2}" font-size="3.4" font-weight="800" text-anchor="middle" fill="#121212" font-family="Montserrat" transform="rotate(90 ${LEFT+W+5} ${TOP+H/2})">200 cm</text>
+      </svg>
+    </div>
+  </div>`;
+}
+
+/* ---------- Pavé de signature (zéro coût, niveau 1) ---------- */
+function initPad() {
+  const cv = document.getElementById('pad');
+  if (!cv) return;
+  const note = document.getElementById('sign-note');
+  const clr = document.getElementById('pad-clear');
+  const ctx = cv.getContext('2d');
+  const dpr = 2;
+  const cw = cv.clientWidth || 300, chh = cv.clientHeight || 40;
+  cv.width = Math.round(cw * dpr); cv.height = Math.round(chh * dpr);
+  ctx.scale(dpr, dpr);
+  ctx.lineWidth = 1.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#121212';
+  let drawing = false, vide = true;
+  const pos = e => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  cv.addEventListener('pointerdown', e => {
+    e.preventDefault(); cv.setPointerCapture(e.pointerId); drawing = true;
+    const q = pos(e); ctx.beginPath(); ctx.moveTo(q.x, q.y);
+  });
+  cv.addEventListener('pointermove', e => {
+    if (!drawing) return;
+    const q = pos(e); ctx.lineTo(q.x, q.y); ctx.stroke();
+    if (vide && note) {
+      vide = false;
+      const d = new Date();
+      note.textContent = 'Signé électroniquement le ' + d.toLocaleDateString('fr-FR') +
+        ' à ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) +
+        ' — empreinte ' + (ETAT.hash || '').slice(0, 8) + ' — copie archivée.';
+    }
+  });
+  const stop = () => { drawing = false; };
+  cv.addEventListener('pointerup', stop); cv.addEventListener('pointercancel', stop); cv.addEventListener('pointerleave', stop);
+  if (clr) clr.addEventListener('click', ev => {
+    ev.preventDefault();
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    vide = true; if (note) note.textContent = '';
+  });
+}
+
+/* ---------- Interactions ---------- */
+const drop = document.getElementById('drop'), input = document.getElementById('file');
+drop.addEventListener('click', () => input.click());
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('hover'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('hover'));
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('hover'); if (e.dataTransfer.files[0]) charger(e.dataTransfer.files[0]); });
+input.addEventListener('change', () => { if (input.files[0]) charger(input.files[0]); });
+document.getElementById('fmt').addEventListener('change', e => { ETAT.format = e.target.value; rendre(); });
+document.getElementById('print').addEventListener('click', () => window.print());
+
+async function charger(file) {
+  ETAT.format = document.getElementById('fmt').value;
+  await analyser(file);
+  document.getElementById('nf').textContent = file.name + ' — ' + (file.size/1024).toFixed(0) + ' Ko';
+  rendre();
+}
+
+/* ---------- Démonstration automatique (captures) ---------- */
+(async function demo(){
+  const q = new URLSearchParams(location.search);
+  const d = q.get('demo');
+  if (!d) return;
+  try {
+  if (d === 'logo') {
+    document.getElementById('fmt').value = 'logo_kakemono';
+    const r = await fetch('logo_marcel_callo.png');
+    const b = await r.blob();
+    const f = new File([b], 'Logo_MarcelCallo_LaMennais.png', { type:'image/png' });
+    await charger(f);
+  }
+  if (d === 'logo_ok') {
+    document.getElementById('fmt').value = 'logo_kakemono';
+    const r = await fetch('demo_logo_300dpi.png');
+    await charger(new File([await r.blob()], 'Logo_MarcelCallo_300dpi.png', { type: 'image/png' }));
+  }
+  if (d === 'encart') {
+    document.getElementById('fmt').value = '1/4';
+    const cv = document.createElement('canvas');
+    cv.width = 1063; cv.height = 1535;
+    const x = cv.getContext('2d');
+    x.fillStyle = '#FFFFFF'; x.fillRect(0,0,1063,1535);
+    x.fillStyle = '#E2001A'; x.fillRect(0,0,1063,150);
+    const lg = document.getElementById('logo-callo');
+    await new Promise(r => { if (lg.complete && lg.naturalWidth) return r();
+      lg.onload = r; lg.onerror = r; setTimeout(r, 1200); });
+    if (lg.naturalWidth) x.drawImage(lg, 1063/2-260, 1535/2-260, 520, 520);
+    x.fillStyle = '#121212';
+    x.font = '900 62px Helvetica, Arial'; x.textAlign = 'center';
+    x.fillText('VOTRE ENTREPRISE', 1063/2, 1180);
+    x.font = '700 34px Helvetica, Arial'; x.fillStyle = '#5A5A5A';
+    x.fillText('Encart 1/4 de page — 90 × 130 mm — 300 dpi', 1063/2, 1250);
+    const b64 = cv.toDataURL('image/png').split(',')[1];
+    const bin = atob(b64), arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    const f = new File([arr], 'Actualycee_Entreprise_Encart14_v1.png', { type:'image/png' });
+    await charger(f);
+  }
+  } catch (e) { document.title = 'ERR: ' + e.message + ' @ ' + (e.stack||'').split('\n')[1]; }
+  if (d === 'vecteur') {
+    document.getElementById('fmt').value = 'logo_kakemono';
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="90mm" height="130mm" viewBox="0 0 90 130">'
+      + '<rect width="90" height="130" fill="#fff"/><text x="45" y="65" font-size="10" font-weight="800" '
+      + 'text-anchor="middle" font-family="Montserrat" fill="#E2001A">LOGO SVG</text></svg>';
+    const f = new File([svg], 'Logo_Entreprise_Vectoriel.svg', { type: 'image/svg+xml' });
+    await charger(f);
+  }
+  if (q.get('h') === '1') {
+    const mm = 96/25.4;
+    document.title = Array.from(document.querySelectorAll('.feuille')).map((f,i)=>
+      'P'+(i+1)+'='+(f.scrollHeight/mm).toFixed(1)+'mm('+f.getBoundingClientRect().height.toFixed(0)+'px)').join(' | ');
+  }
+})();
+/* ---------- Intégration au site : réception du fichier depuis depot.html ---------- */
+window.addEventListener('message', function (e) {
+  if (e.origin !== location.origin || !e.data) return;
+  if (e.data.type === 'prebat-file' && e.data.file) {
+    var sel = document.getElementById('fmt');
+    if (e.data.format) { sel.value = e.data.format; ETAT.format = e.data.format; }
+    charger(e.data.file);
+  }
+});
+// signale au site que la page est prête à recevoir le fichier
+if (window.opener) { try { window.opener.postMessage({ type: 'prebat-ready' }, location.origin); } catch (err) {} }
+
+/* ---------- Chronométrage : ?chrono=1 ---------- */
+if (new URLSearchParams(location.search).get('chrono') === '1') {
+  (async () => {
+    const fab = (w, h) => {
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+      const b64 = c.toDataURL('image/png').split(',')[1];
+      const bin = atob(b64), a = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+      return a;
+    };
+    const durs = [];
+    for (let i = 0; i < 5; i++) {
+      const a = fab(1063, 1535);
+      const f = new File([a], 'mesure.png', { type: 'image/png' });
+      document.getElementById('fmt').value = '1/4';
+      const t0 = performance.now();
+      await charger(f);
+      durs.push(performance.now() - t0);
+    }
+    const tri = [...durs].sort((x, y) => x - y);
+    const charge = performance.timing ? performance.timing.responseEnd - performance.timing.navigationStart : -1;
+    document.title = 'CHRONO ' + durs.map(d => Math.round(d)).join(' / ') + ' ms';
+  })();
+}
+
+/* ---------- Banc d'essai automatique : ?test=1 ---------- */
+if (new URLSearchParams(location.search).get('test') === '1') {
+  const png = (w, h, name) => {
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+    x.fillStyle = '#121212'; x.font = '48px Montserrat, Arial'; x.fillText('TEST', 40, 100);
+    const b64 = c.toDataURL('image/png').split(',')[1];
+    const bin = atob(b64), arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return new File([arr], name, { type: 'image/png' });
+  };
+  const verdict = () => (document.querySelector('.verdict .txt') || { textContent: '' }).textContent.trim().toUpperCase();
+  const refOf = () => (document.body.innerHTML.match(/PB-2027-[A-Z0-9]{6}/) || ['AUCUNE'])[0];
+  const setFmt = v => { document.getElementById('fmt').value = v; ETAT.format = v; };
+
+  (async () => {
+    const out = [], check = (nom, cond, detail) => out.push((cond ? 'OK ' : 'KO ') + nom + (cond ? '' : ' [' + detail + ']'));
+
+    // 1. fichier conforme
+    setFmt('1/4'); await charger(png(1063, 1535, 'conforme.png'));
+    check('1/4 a 300 dpi -> conforme', verdict().includes('CONFORME'), verdict().slice(0, 60));
+
+    // 2. petit logo : le cas reel du lycee
+    setFmt('logo_kakemono'); await charger(png(220, 220, 'logo220.png'));
+    check('logo 220 px -> refuse', verdict().includes('REFUS'), verdict().slice(0, 60));
+    check('  densite 43 dpi annoncee', document.body.innerHTML.includes('43 dpi'), 'densite absente');
+
+    // 3. mauvaises proportions
+    setFmt('1/4'); await charger(png(2000, 800, 'ratio.png'));
+    check('ratio 2,5 au lieu de 0,69 -> refuse', verdict().includes('REFUS'), verdict().slice(0, 60));
+
+    // 4. vectoriel
+    setFmt('logo_kakemono');
+    await charger(new File(['<svg xmlns="http://www.w3.org/2000/svg" width="90" height="130"></svg>'], 'v.svg', { type: 'image/svg+xml' }));
+    check('SVG -> sous reserve', verdict().includes('SOUS R'), verdict().slice(0, 60));
+    check('  mention atelier', document.body.innerHTML.includes("contrôle visuel de l'atelier"), 'mention absente');
+
+    // 5. PDF
+    setFmt('1/4');
+    await charger(new File([new Uint8Array([0x25,0x50,0x44,0x46,0x2D])], 'x.pdf', { type: 'application/pdf' }));
+    check('PDF -> sous reserve', verdict().includes('SOUS R'), verdict().slice(0, 60));
+
+    // 6. reference deterministe et distincte par support
+    const fA = png(1063, 1535, 'conforme.png');
+    setFmt('1/4'); await charger(fA); const r1 = refOf();
+    await charger(fA); const r2 = refOf();
+    check('reference au bon format', /^PB-2027-[A-Z0-9]{6}$/.test(r1), r1);
+    check('meme fichier -> meme reference', r1 === r2, r1 + ' != ' + r2);
+    setFmt('logo_kakemono'); await charger(fA); const r3 = refOf();
+    check('support different -> reference differente', r1 !== r3, r1 + ' == ' + r3);
+
+    // 7. signature a l'ecran
+    const cv = document.getElementById('pad');
+    const has = !!cv;
+    if (has) {
+      const r = cv.getBoundingClientRect();
+      cv.dispatchEvent(new PointerEvent('pointerdown', { clientX: r.left + 10, clientY: r.top + 10, bubbles: true, pointerId: 1 }));
+      cv.dispatchEvent(new PointerEvent('pointermove', { clientX: r.left + 40, clientY: r.top + 25, bubbles: true, pointerId: 1 }));
+      cv.dispatchEvent(new PointerEvent('pointerup', { clientX: r.left + 40, clientY: r.top + 25, bubbles: true, pointerId: 1 }));
+    }
+    check('pave de signature present', has, 'canvas absent');
+    check('  mention horodatee apr\u00e8s signature', (document.getElementById('sign-note') || {}).textContent !== '', 'note vide');
+
+    document.title = 'TEST ' + out.filter(x => x.startsWith('OK')).length + '/' + out.length + ' >> ' + out.join(' | ');
+  })();
+}
+</script>
+
+</body>
+</html>

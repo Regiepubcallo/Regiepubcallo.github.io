@@ -277,5 +277,110 @@
     setTimeout(envoyer, 45000);
   }
 
-  document.addEventListener('DOMContentLoaded', function () { initMesure(); initForm(); initMerci(); initDepot(); });
+
+  // ---------- Contrôle qualité en direct sur la page de dépôt ----------
+  // Mêmes seuils que le document Pré-BAT : 300 dpi exigés, 240 dpi plancher,
+  // 1,5 % d'écart de proportions admis, arrondi de 1 dpi sur la densité.
+  var GAB = {
+    '1/6': { mm: [90, 85] },
+    '1/4': { mm: [90, 130] },
+    '1/2': { mm: [185, 130] },
+    'logo': { mm: [90, 130], prebat: 'logo_kakemono' }
+  };
+  var PENDING = null;   // fichier à transmettre au Pré-BAT ouvert dans un autre onglet
+
+  function px(mm, dpi) { return Math.round(mm / 25.4 * dpi); }
+
+  function controlerFichier(file, cle) {
+    return new Promise(function (resolve) {
+      var g = GAB[cle], mm = g.mm;
+      var ext = (file.name.split('.').pop() || '').toLowerCase();
+      var vecteur = ['ai', 'eps', 'svg'].indexOf(ext) >= 0;
+      var res = {
+        verdict: 'reserve', mesure: '', fichier: file.name,
+        attendu: px(mm[0], 300) + ' × ' + px(mm[1], 300) + ' px',
+        format: g.prebat || document.getElementById('format-encart').value
+      };
+      if (vecteur || ext === 'pdf') {
+        res.raison = (vecteur ? 'Fichier vectoriel' : 'Fichier PDF') +
+          ' : pas de définition en pixels. Contrôle visuel de l\'atelier, copie conservée.';
+        return resolve(res);
+      }
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var dpi = Math.min(w / (mm[0] / 25.4), h / (mm[1] / 25.4));
+        var ecart = Math.abs((w / h) / (mm[0] / mm[1]) - 1) * 100;
+        res.mesure = w + ' × ' + h + ' px — ' + Math.round(dpi) + ' dpi';
+        if (Math.round(dpi) < 240) {
+          res.verdict = 'ko';
+          res.raison = 'Définition insuffisante : ' + Math.round(dpi) + ' dpi. Il faut ' + res.attendu + '.';
+        } else if (ecart > 1.5) {
+          res.verdict = 'ko';
+          res.raison = 'Proportions différentes du format : ' + ecart.toFixed(1) + ' % d\'écart.';
+        } else if (Math.round(dpi) < 300) {
+          res.verdict = 'reserve';
+          res.raison = 'Définition limite (' + Math.round(dpi) + ' dpi). Acceptable, reprise recommandée pour un texte fin.';
+        } else {
+          res.verdict = 'ok';
+          res.raison = 'Proportions et définition conformes : votre encart est prêt.';
+        }
+        URL.revokeObjectURL(url);
+        resolve(res);
+      };
+      img.onerror = function () {
+        res.raison = 'Image illisible par le navigateur. Vérifiez le fichier.';
+        resolve(res);
+      };
+      img.src = url;
+    });
+  }
+
+  function afficherControle(zone, res) {
+    if (!zone) return;
+    var mot = res.verdict === 'ok' ? 'Conforme' : (res.verdict === 'reserve' ? 'À confirmer' : 'Refusé');
+    zone.className = 'ctl ' + res.verdict;
+    zone.hidden = false;
+    zone.innerHTML =
+      '<div class="ctl-h"><span class="ctl-badge">' + mot + '</span>' +
+      '<span class="ctl-m">' + (res.mesure || res.fichier) + '</span></div>' +
+      '<p>' + res.raison + (res.verdict === 'ok' ? '' : ' Attendu : ' + res.attendu + '.') + '</p>' +
+      '<a class="ctl-a" href="prebat.html" target="_blank" rel="noopener">Voir et imprimer mon Pré-BAT</a>';
+    var lien = zone.querySelector('.ctl-a');
+    lien.addEventListener('click', function () { PENDING = res; });
+  }
+
+  function initControle() {
+    var f = document.getElementById('form-depot');
+    if (!f || !f.encart) return;
+
+    // format présélectionné d'après le choix fait plus tôt sur le site
+    try {
+      var ctx = load(), ids = ctx.formatIds || [];
+      var sel = document.getElementById('format-encart');
+      var map = { e16: '1/6', e14: '1/4', e12: '1/2', p16: '1/6', p14: '1/4', p12: '1/2' };
+      if (sel && ids.length && map[ids[0]]) sel.value = map[ids[0]];
+    } catch (e) {}
+
+    f.encart.addEventListener('change', function () {
+      var file = f.encart.files[0];
+      if (!file) return;
+      controlerFichier(file, document.getElementById('format-encart').value)
+        .then(function (r) { afficherControle(document.getElementById('ctl-encart'), r); });
+    });
+    if (f.logo) f.logo.addEventListener('change', function () {
+      var file = f.logo.files[0];
+      if (!file) return;
+      controlerFichier(file, 'logo')
+        .then(function (r) { afficherControle(document.getElementById('ctl-logo'), r); });
+    });
+
+    // le Pré-BAT ouvert dans un onglet voisin réclame le fichier
+    window.addEventListener('message', function (e) {
+      if (e.origin !== location.origin || !e.data || e.data.type !== 'prebat-ready' || !PENDING) return;
+      e.source.postMessage({ type: 'prebat-file', file: PENDING.fichier, format: PENDING.format }, location.origin);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () { initMesure(); initForm(); initMerci(); initDepot(); initControle(); });
 })();
