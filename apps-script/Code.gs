@@ -167,7 +167,85 @@ function handleVisite_(b) {
   return { ok: true };
 }
 
+
+/* ------------------------------------------------------------------
+   CONTRÔLE DES CHAMPS REÇUS
+
+   Pourquoi ici et pas dans le navigateur : le site est statique, son jeton
+   est public (il est dans js/config.js). N'importe qui peut donc poster
+   directement sur cette adresse en contournant le formulaire. Un contrôle
+   côté navigateur ne protège que les visiteurs honnêtes ; celui-ci protège
+   le classeur.
+
+   Chaque fonction renvoie une chaîne vide si tout est bon, sinon le motif
+   du refus, en français, tel qu'il sera journalisé.
+------------------------------------------------------------------ */
+
+var REGLES = {
+  NOM: /^[A-Za-zÀ-ÖØ-öø-ÿ'’ .-]{1,60}$/,
+  TEL: /^(?:\+?33|0)[1-9]\d{8}$/,
+  FORMAT_IDS: ['e16', 'e14', 'e12', 'p16', 'p14', 'p12'],
+  INTERETS: ['oui', 'peut', 'non'],
+  CHAMPS_FICHIER: ['bon', 'encart', 'logo', 'bat'],
+  MIMES: ['application/pdf', 'image/png', 'image/jpeg', 'image/svg+xml',
+          'application/postscript', 'application/illustrator', 'application/octet-stream']
+};
+
+function estTableau_(v) { return Object.prototype.toString.call(v) === '[object Array]'; }
+
+function valider_(b) {
+  var email = String(b.email || '').trim();
+  if (!clean_(email)) return 'adresse e-mail invalide';
+  if (email.length > 180) return 'adresse e-mail trop longue';
+
+  var entreprise = String(b.entreprise || '').trim();
+  if (entreprise.length < 2 || entreprise.length > 120) return 'nom d’entreprise manquant ou invalide';
+
+  if (String(b.action) === 'depot') return validerFichiers_(b);
+
+  var nom = String(b.nom || '').trim();
+  var prenom = String(b.prenom || '').trim();
+  if (!nom || !prenom) return 'nom et prénom obligatoires';
+  if (!REGLES.NOM.test(nom) || !REGLES.NOM.test(prenom)) return 'nom ou prénom invalide';
+  if (String(b.fonction || '').trim().length < 2) return 'fonction obligatoire';
+  if (String(b.fonction).length > 80) return 'fonction trop longue';
+
+  if (!REGLES.TEL.test(String(b.tel || '').replace(/[\s.\-()]/g, ''))) return 'numéro de téléphone invalide';
+
+  if (REGLES.INTERETS.indexOf(String(b.interet)) < 0) return 'réponse d’intérêt invalide';
+  if (b.rgpd !== true) return 'accord RGPD manquant';
+
+  if (b.formatIds != null) {
+    if (!estTableau_(b.formatIds)) return 'formats invalides';
+    if (b.formatIds.length > 6) return 'trop de formats sélectionnés';
+    for (var i = 0; i < b.formatIds.length; i++) {
+      if (REGLES.FORMAT_IDS.indexOf(String(b.formatIds[i])) < 0) return 'format inconnu';
+    }
+  }
+  if (String(b.interet) === 'oui' && (!b.formatIds || !b.formatIds.length)) return 'aucun format choisi';
+  if (String(b.raison || '').length > 300) return 'motif trop long';
+  return '';
+}
+
+function validerFichiers_(b) {
+  if (!estTableau_(b.files) || !b.files.length) return 'aucun fichier reçu';
+  if (b.files.length > 6) return 'trop de fichiers';
+  var vus = {};
+  for (var i = 0; i < b.files.length; i++) {
+    var f = b.files[i] || {};
+    if (REGLES.CHAMPS_FICHIER.indexOf(String(f.field)) < 0) return 'type de fichier inconnu';
+    if (!f.name || String(f.name).length > 140) return 'nom de fichier invalide';
+    if (!f.data || String(f.data).length < 100) return 'fichier vide';
+    if (f.mime && REGLES.MIMES.indexOf(String(f.mime)) < 0) return 'type de fichier non accepté';
+    vus[f.field] = true;
+  }
+  if (!vus.bon) return 'le bon de commande signé est obligatoire';
+  return '';
+}
+
 function handleReponse_(b) {
+  var refus = valider_(b);
+  if (refus) { log_('REFUS', '', refus); return { ok: false, error: refus }; }
   var email = clean_(b.email);
   if (!email) return { ok: false, error: 'e-mail manquant' };
   var row = upsert_(email);
@@ -236,6 +314,8 @@ function handleCommentaire_(b) {
 }
 
 function handleDepot_(b) {
+  var refus = valider_(b);
+  if (refus) { log_('REFUS', '', refus); return { ok: false, error: refus }; }
   var email = clean_(b.email);
   if (!email) return { ok: false, error: 'e-mail manquant' };
   var files = b.files || [];

@@ -135,6 +135,16 @@
         if (!f[req[i]].value.trim()) { err.textContent = 'Merci de renseigner tous les champs obligatoires.'; f[req[i]].focus(); return; }
       }
       if (!isEmail(f.mail.value.trim())) { err.textContent = 'Adresse e-mail invalide.'; f.mail.focus(); return; }
+      // mêmes règles que côté serveur, pour prévenir avant l'envoi
+      var telNu = f.tel.value.replace(/[\s.\-()]/g, '');
+      if (!/^(?:\+?33|0)[1-9]\d{8}$/.test(telNu)) {
+        err.textContent = 'Numéro de téléphone invalide : 10 chiffres, ou +33 suivi de 9 chiffres.';
+        f.tel.focus(); return;
+      }
+      if (f.nom.value.trim().length < 2 || f.prenom.value.trim().length < 2) {
+        err.textContent = 'Merci d\'indiquer votre nom et votre prénom en entier.';
+        f.nom.focus(); return;
+      }
       if (!interet) { err.textContent = 'Indiquez si vous êtes intéressé(e) : oui, peut-être ou non.'; return; }
       if (interet === 'oui' && !chosen.length) { err.textContent = 'Choisissez au moins un format (encart ou pack partenaire).'; return; }
       if (!f.rgpd.checked) { err.textContent = 'Merci de cocher la confirmation RGPD pour continuer.'; f.rgpd.focus(); return; }
