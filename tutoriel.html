@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Le parcours partenaire — de la commande à la facture</title>
+<meta name="description" content="Cinq moments, trois documents, deux règles : le parcours partenaire de la régie publicitaire Marcel Callo, de la commande à la facture.">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+/* Composants propres au guide — mêmes jetons que la charte du site */
+.g-sec{margin-bottom:34px}
+.g-sec > h2{margin:0 0 6px;font-size:24px;font-weight:800;color:var(--navy);line-height:1.2}
+.g-sec > p.lead{margin:0 0 20px;font-size:15px;color:var(--muted);max-width:760px}
+.g-num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+  background:var(--red);color:#fff;font-weight:800;font-size:15px;border-radius:3px;margin-right:12px;flex:0 0 34px}
+
+/* Trois documents */
+.g-docs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.g-doc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.g-doc .badge{align-self:flex-start}
+.g-doc h3{margin:0;font-size:17px;font-weight:800;color:var(--navy)}
+.g-doc p{margin:0;font-size:14px;line-height:1.6;color:var(--ink)}
+.g-doc .g-sans{margin-top:auto;font-size:13px;font-weight:600;color:var(--red);border-top:1px solid var(--line);padding-top:10px}
+
+/* Frise des cinq moments */
+.g-steps{display:grid;gap:12px}
+.g-step{display:grid;grid-template-columns:44px 1fr;gap:16px;background:#fff;border:1px solid var(--line);
+  border-radius:8px;padding:18px 22px;border-left:4px solid var(--red)}
+.g-step .n{font-size:26px;font-weight:800;color:var(--red);line-height:1}
+.g-step h3{margin:0 0 4px;font-size:16px;font-weight:800;color:var(--navy)}
+.g-step p{margin:0;font-size:14px;line-height:1.6;color:var(--ink)}
+.g-step .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+.g-tag{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 9px;
+  border-radius:3px;background:var(--pale);color:var(--navy)}
+.g-tag.date{background:var(--red);color:#fff}
+
+/* Qui fait quoi */
+.g-who{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.g-who .card h3{margin:0 0 10px;font-size:16px;font-weight:800;color:var(--navy)}
+.g-who ul{margin:0;padding-left:0;list-style:none;font-size:14px;line-height:1.6}
+.g-who li{position:relative;padding-left:22px;margin-bottom:8px}
+.g-who li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;background:var(--red);border-radius:2px}
+
+/* Quand ça dérape */
+.g-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.g-table th{background:var(--navy);color:#fff;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;
+  text-align:left;padding:12px 16px;font-weight:700}
+.g-table td{padding:13px 16px;border-top:1px solid var(--line);font-size:14px;line-height:1.5;vertical-align:top}
+.g-table td:first-child{font-weight:800;color:var(--navy);width:30%}
+.g-table tr:nth-child(even) td{background:#fbfcfa}
+
+/* Check-lists */
+.g-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.g-checks .card h3{margin:0 0 12px;font-size:16px;font-weight:800;color:var(--navy)}
+.g-checks ul{list-style:none;padding:0;margin:0;font-size:14px;line-height:1.5}
+.g-checks li{display:grid;grid-template-columns:18px 1fr;gap:10px;margin-bottom:9px}
+.g-checks li span.box{width:16px;height:16px;border:2px solid var(--navy);border-radius:3px;display:inline-block;margin-top:2px}
+
+.g-note{font-size:13px;color:var(--muted);border-left:3px solid var(--line);padding-left:14px;margin-top:8px}
+
+@media (max-width:860px){
+  .g-docs,.g-who,.g-checks{grid-template-columns:1fr}
+  .g-table td:first-child{width:auto}
+}
+@page{size:A4 portrait;margin:13mm 12mm}
+@media print{
+  body{background:#fff;font-size:12px}
+  .top,.season,.skip{display:none}
+  /* la largeur A4 (793 px) déclenche la règle mobile : on rétablit les grilles */
+  .g-docs{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .g-who,.g-checks{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .g-doc,.card{padding:14px}
+  .g-doc h3,.g-who .card h3,.g-checks .card h3{font-size:14px}
+  .g-doc p,.g-who li,.g-checks ul{font-size:11.5px}
+  .g-table td{font-size:11px;padding:7px 11px;line-height:1.4}
+  .g-table th{font-size:10px;padding:9px 12px}
+  .hero{background:var(--navy);padding:26px 0}
+  .hero h1{font-size:26px}.hero p{font-size:13px}
+  .proof-in{padding:14px 0}
+  .wrap{padding:0;max-width:none}
+  .g-sec > h2{font-size:19px} .g-sec > p.lead{font-size:12px}
+  .g-step{padding:12px 16px} .g-step p{font-size:12px} .g-doc p{font-size:12px}
+  .g-sec{margin-bottom:20px}
+  .g-sec.brk{break-before:page}
+  .g-sec > h2,.g-sec > p.lead{break-after:avoid}
+  .g-step,.g-doc,.card{break-inside:avoid}
+  .g-table{break-inside:auto}
+  .g-table thead{display:table-header-group}
+  .g-table tr{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body data-page="tutoriel">
+
+<header class="top">
+<div class="brand"><img src="assets/logo.png" alt="Marcel Callo"><div>Marcel Callo<small>LYCÉE PRIVÉ SOUS CONTRAT &amp; PÔLE SUP' · REDON</small></div></div>
+<div class="season">RÉGIE PUBLICITAIRE<br>SAISON 2027</div>
+</header>
+
+<section class="hero"><div>
+<div class="kicker">Guide du parcours partenaire</div>
+<h1>De la commande à la facture, sans accroc.</h1>
+<p>Cinq moments, trois documents, deux règles. Ce guide dit qui fait quoi, à quelle date, et ce qui se passe quand quelque chose dérape.</p>
+</div></section>
+
+<section class="proof" aria-label="Les quatre dates de la saison 2027"><div class="proof-in">
+<div><b>01/12</b><span>réserver l'emplacement</span></div>
+<div><b>06/12</b><span>transmettre les éléments</span></div>
+<div><b>07/12</b><span>retourner le BAT signé</span></div>
+<div><b>18/12</b><span>parution du magazine</span></div>
+</div></section>
+
+<main id="contenu" class="wrap">
+
+<section class="g-sec">
+<h2>Trois documents, trois rôles</h2>
+<p class="lead">Les confondre est la source de presque tous les litiges. Chacun prouve une chose différente, et aucun ne remplace les autres.</p>
+<div class="g-docs">
+  <div class="g-doc">
+    <span class="badge">Contrat</span>
+    <h3>Le bon de commande</h3>
+    <p>Il dit quoi, combien et quand : format, prix, support, échéances. C'est lui qui rend la commande ferme.</p>
+    <div class="g-sans">Sans lui : rien n'est dû, rien ne peut être facturé.</div>
+  </div>
+  <div class="g-doc">
+    <span class="badge">Validation</span>
+    <h3>Le Pré-BAT, puis le BAT</h3>
+    <p>Le Pré-BAT contrôle le fichier. Le BAT montre le visuel en page. C'est le BAT signé qui autorise l'impression.</p>
+    <div class="g-sans">Sans lui : aucun passage en fabrication.</div>
+  </div>
+  <div class="g-doc">
+    <span class="badge">Paiement</span>
+    <h3>La facture</h3>
+    <p>Elle constate que la prestation est due et exigible. Elle part à réception du BAT signé, pas à la parution.</p>
+    <div class="g-sans">Sans elle : rien à encaisser, rien à relancer.</div>
+  </div>
+</div>
+<p class="g-note">Deux règles en découlent, sans exception : <b>pas de fabrication sans BAT signé</b>, <b>pas de facture sans bon de commande signé</b>.</p>
+</section>
+
+<section class="g-sec">
+<h2>Qui fait quoi</h2>
+<p class="lead">Le partenaire n'a que trois gestes à faire. Tout le reste est de notre côté — et c'est ce qui fait la différence sur ce type de support.</p>
+<div class="g-who">
+  <div class="card">
+    <h3>Le partenaire</h3>
+    <ul>
+      <li>Signer le bon de commande</li>
+      <li>Envoyer un encart lisible à la bonne définition</li>
+      <li>Signer le BAT</li>
+    </ul>
+    <p class="hint" style="margin:12px 0 0">Aucune compétence technique attendue : le site mesure le fichier et dit précisément ce qui manque.</p>
+  </div>
+  <div class="card">
+    <h3>La régie</h3>
+    <ul>
+      <li>Contrôler le fichier et rendre un verdict chiffré</li>
+      <li>Mettre en page et produire le BAT</li>
+      <li>Imprimer, publier, facturer, archiver</li>
+    </ul>
+    <p class="hint" style="margin:12px 0 0">Le dossier par entreprise est créé automatiquement au premier dépôt, avec sa date et son lien.</p>
+  </div>
+</div>
+</section>
+
+<section class="g-sec">
+<h2>Les cinq moments du parcours</h2>
+<p class="lead">Chaque moment a un responsable, une date et une preuve conservée. Rien d'autre à retenir.</p>
+<div class="g-steps">
+
+  <div class="g-step"><div class="n">1</div><div>
+    <h3>La commande</h3>
+    <p>Le partenaire reçoit le devis, choisit son format, télécharge le bon de commande, le signe et le renvoie avec les CGV acceptées.</p>
+    <div class="meta"><span class="g-tag">Partenaire</span><span class="g-tag date">avant le 01/12</span><span class="g-tag">Preuve : PDF signé</span></div>
+  </div></div>
+
+  <div class="g-step"><div class="n">2</div><div>
+    <h3>Les éléments</h3>
+    <p>Encart et, si l'offre partenaire a été souscrite, le logo. On conserve toujours le fichier d'origine tel qu'il a été déposé, jamais une version retouchée.</p>
+    <div class="meta"><span class="g-tag">Partenaire</span><span class="g-tag date">avant le 06/12</span><span class="g-tag">Preuve : fichiers d'origine</span></div>
+  </div></div>
+
+  <div class="g-step"><div class="n">3</div><div>
+    <h3>Le contrôle</h3>
+    <p>Dès le dépôt, le fichier est mesuré : proportions et définition à la taille finale. Le verdict tombe en quelques millisecondes, et le Pré-BAT porte le motif chiffré.</p>
+    <div class="meta"><span class="g-tag">Régie</span><span class="g-tag date">sous 24 h</span><span class="g-tag">Preuve : Pré-BAT référencé</span></div>
+  </div></div>
+
+  <div class="g-step"><div class="n">4</div><div>
+    <h3>La validation</h3>
+    <p>Le BAT est envoyé, daté, avec son échéance de retour. Le partenaire écrit « Bon pour accord », date et signe. Une seule série de corrections est admise.</p>
+    <div class="meta"><span class="g-tag">Partenaire</span><span class="g-tag date">avant le 07/12</span><span class="g-tag">Preuve : BAT signé</span></div>
+  </div></div>
+
+  <div class="g-step"><div class="n">5</div><div>
+    <h3>La facture, puis la parution</h3>
+    <p>La facture part à réception du BAT signé. Le paiement est à 30 jours. Après parution, on conserve la page du magazine : c'est la preuve d'exécution.</p>
+    <div class="meta"><span class="g-tag">Éditeur</span><span class="g-tag date">18/12 puis 30 j</span><span class="g-tag">Preuve : facture + page parue</span></div>
+  </div></div>
+
+</div>
+</section>
+
+
+
+<section class="g-sec brk">
+<h2>Quand ça dérape</h2>
+<p class="lead">Cinq situations, cinq réflexes. Elles couvrent la quasi-totalité des dossiers qui prennent du retard.</p>
+<table class="g-table">
+<thead><tr><th>Situation</th><th>Le réflexe</th></tr></thead>
+<tbody>
+<tr><td>Le fichier est refusé</td><td>Rien en page, rien facturé. On renvoie le motif chiffré le jour même : « il vous faut 1 063 × 1 535 px, votre fichier fait 220 × 220 ».</td></tr>
+<tr><td>Le bon de commande manque</td><td>Accusé de réception des fichiers, pas de mise en page, relance sur le seul point manquant. Des fichiers sans bon de commande ne sont pas une commande.</td></tr>
+<tr><td>Le BAT ne revient pas</td><td>Relance à trois jours. La validation tacite ne s'applique que si le bon de commande la prévoit — sinon on relance par écrit et on documente.</td></tr>
+<tr><td>Le partenaire annule</td><td>Par écrit uniquement. 25 % du prix avant la date limite des éléments, 100 % après. Les frais techniques engagés restent dus.</td></tr>
+<tr><td>La facture n'est pas payée</td><td>À l'échéance, sans rappel : pénalités au taux BCE majoré de 10 points et 40 € forfaitaires. La diffusion peut être suspendue.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section class="g-sec">
+<h2>Deux check-lists</h2>
+<p class="lead">À passer avant d'engager l'argent de l'établissement, et avant d'attendre un virement qui ne viendra pas.</p>
+<div class="g-checks">
+  <div class="card">
+    <h3>Avant de lancer la fabrication</h3>
+    <ul>
+      <li><span class="box"></span><span>Bon de commande signé, complet, au bon prix</span></li>
+      <li><span class="box"></span><span>Encart reçu et conforme au contrôle</span></li>
+      <li><span class="box"></span><span>Logo conforme, si offre partenaire</span></li>
+      <li><span class="box"></span><span>Pagination arrêtée avec l'atelier</span></li>
+      <li><span class="box"></span><span>BAT envoyé, daté</span></li>
+      <li><span class="box"></span><span>BAT signé reçu et classé</span></li>
+      <li><span class="box"></span><span>Montant net saisi dans le classeur</span></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Avant d'envoyer la facture</h3>
+    <ul>
+      <li><span class="box"></span><span>Bon de commande signé au dossier</span></li>
+      <li><span class="box"></span><span>BAT signé au dossier</span></li>
+      <li><span class="box"></span><span>Montant net = prix du bon de commande, remises déduites</span></li>
+      <li><span class="box"></span><span>Mention d'exonération de TVA présente</span></li>
+      <li><span class="box"></span><span>Échéance à 30 jours</span></li>
+      <li><span class="box"></span><span>Numéro de facture unique</span></li>
+    </ul>
+  </div>
+</div>
+<p class="g-note">Les validations par courriel et les signatures électroniques sont admises comme preuve — à condition qu'elles existent et soient archivées. Le détail juridique figure aux articles 4, 8, 9, 10, 11, 16 et 22 des CGV V2.3.</p>
+</section>
+
+</main>
+
+<footer class="foot">OGEC Lycée Marcel Callo · 21 avenue Étienne Gascon, 35600 Redon · Guide interne du parcours partenaire · saison 2027</footer>
+
+</body>
+</html>
