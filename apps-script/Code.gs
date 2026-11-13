@@ -15,7 +15,13 @@
 
 // ===================== CONFIGURATION =====================
 var CONFIG = {
-  TOKEN: 'callo2027-nQ7xW2',                       // identique à js/config.js
+  TOKEN: 'callo2027-nQ7xW2',
+
+  // Nombre d'envois autorisés par adresse, sur une fenêtre de 6 heures.
+  // Le dépôt est plus large que le formulaire : un dossier arrive
+  // normalement en plusieurs fois (bon de commande, encart et logo, puis
+  // BAT signé).
+  QUOTAS: { reponse: 3, depot: 6 },
   NOTIFY_EMAIL: 'd.bougreau@lyceemarcelcallo.org', // alertes réponses / dépôts
   SEND_ACK_TO_PARTNER: true,                       // accusé de réception après dépôt
   DRIVE_FOLDER_NAME: 'Régie Callo 2027 - Dépôts partenaires',
@@ -84,6 +90,29 @@ var CANAUX = {
  * chiffre est juste même si une formule n'a pas été recopiée sur les
  * dernières lignes.
  */
+
+/**
+ * Limite les envois par adresse, sur une fenêtre de six heures.
+ *
+ * Le compteur vit dans le cache du script : il expire tout seul, donc il n'y
+ * a aucune ligne à nettoyer et aucune propriété qui s'accumule. Une adresse
+ * qui insiste est bloquée sans que rien ne soit écrit nulle part.
+ *
+ * Seules les actions qui écrivent dans le classeur sont comptées. Les
+ * événements de parcours (visite, téléchargement, durée) passent librement :
+ * ils sont fréquents par nature.
+ */
+function quota_(action, email) {
+  var max = CONFIG.QUOTAS && CONFIG.QUOTAS[action];
+  if (!max) return true;
+  var cle = 'q_' + action + '_' + String(email || '').toLowerCase();
+  var cache = CacheService.getScriptCache();
+  var n = parseInt(cache.get(cle) || '0', 10);
+  if (n >= max) return false;
+  cache.put(cle, String(n + 1), 21600);   // 6 heures
+  return true;
+}
+
 function kpiJson_() {
   var sh = sheet_(SHEET_SUIVI);
   var n = Math.max(0, sh.getLastRow() - 1);
@@ -133,6 +162,11 @@ function doPost(e) {
     try { body = JSON.parse((e.postData && e.postData.contents) || '{}'); } catch (err) { return json_({ ok: false, error: 'JSON invalide' }); }
     var token = body.token || (e.parameter && e.parameter.k);
     if (token !== CONFIG.TOKEN) return json_({ ok: false, error: 'Non autorisé' });
+
+    if (!quota_(String(body.action || ''), body.email)) {
+      log_('QUOTA', String(body.email || ''), 'refusé : ' + body.action);
+      return json_({ ok: false, error: 'Trop d’envois depuis cette adresse. Réessayez dans quelques heures, ou écrivez-nous.' });
+    }
 
     // Événement Brevo (webhook) : { event, email, ... }
     if (body.event && !body.action) return json_(handleBrevo_(body));
