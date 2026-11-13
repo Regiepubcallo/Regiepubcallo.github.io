@@ -18,6 +18,52 @@
 .g-num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
   background:var(--red);color:#fff;font-weight:800;font-size:15px;border-radius:3px;margin-right:12px;flex:0 0 34px}
 
+
+/* Schémas */
+.g-fig{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px 22px;margin-bottom:8px}
+.g-fig figcaption{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.5}
+.g-fig figcaption b{color:var(--navy)}
+.g-fig svg{display:block;width:100%;height:auto}
+.g-fig text{font-family:'Montserrat',Arial,sans-serif}
+.g-legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--muted)}
+.g-legend span{display:inline-flex;align-items:center;gap:7px}
+.g-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+/* Chaîne des documents */
+.g-chain{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;align-items:stretch;gap:0;margin-bottom:6px}
+.g-chain .node{border:1px solid var(--line);border-radius:8px;background:#fff;padding:16px 18px;border-top:4px solid var(--navy)}
+.g-chain .node.end{border-top-color:var(--red)}
+.g-chain .node b{display:block;font-size:13px;font-weight:800;color:var(--navy);letter-spacing:.4px}
+.g-chain .node span{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.g-chain .gate{display:flex;align-items:center;justify-content:center;position:relative}
+.g-chain .gate::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--red)}
+.g-chain .gate em{position:relative;background:var(--red);color:#fff;font-style:normal;font-weight:800;
+  font-size:11px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+@media (max-width:860px){.g-chain{grid-template-columns:1fr}.g-chain .gate{height:34px}.g-chain .gate::before{left:50%;right:auto;top:0;bottom:0;width:2px;height:auto}}
+@media print{.g-fig{padding:14px;break-inside:avoid}.g-chain{grid-template-columns:1fr 30px 1fr 30px 1fr}.g-fig figcaption{font-size:10.5px}}
+
+
+/* Chaîne documentaire et verrous */
+.g-chain{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:stretch;margin:4px 0 18px}
+.g-chain .node{border:1px solid var(--line);border-radius:8px;background:#fff;padding:16px 18px;border-top:4px solid var(--navy)}
+.g-chain .node.end{border-top-color:var(--red)}
+.g-chain .node b{display:block;font-size:13px;font-weight:800;color:var(--navy);letter-spacing:.5px}
+.g-chain .node span{display:block;font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45}
+.g-chain .gate{display:flex;align-items:center;justify-content:center;position:relative}
+.g-chain .gate::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--red)}
+.g-chain .gate em{position:relative;background:var(--red);color:#fff;font-style:normal;font-weight:800;
+  font-size:13px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
+.g-locks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:6px}
+.g-locks div{border-left:4px solid var(--red);padding:4px 0 4px 14px}
+.g-locks b{display:block;font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--red)}
+.g-locks span{display:block;font-size:14px;font-weight:700;color:var(--navy);margin-top:3px}
+@media (max-width:860px){.g-chain{grid-template-columns:1fr}.g-chain .gate{height:36px}
+ .g-chain .gate::before{left:50%;right:auto;top:0;bottom:0;width:2px;height:auto}.g-locks{grid-template-columns:1fr}}
+@media print{.g-chain{grid-template-columns:1fr 34px 1fr 34px 1fr}.g-chain .node{padding:11px 13px}
+ .g-chain .node b{font-size:11.5px}.g-chain .node span{font-size:10.5px}.g-locks{grid-template-columns:repeat(3,1fr)}
+ .g-locks span{font-size:12px}
+ .g-chain,.g-locks,.g-fig{break-inside:avoid}}
+
 /* Trois documents */
 .g-docs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .g-doc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px;display:flex;flex-direction:column;gap:10px}
@@ -83,9 +129,11 @@
   .proof-in{padding:14px 0}
   .wrap{padding:0;max-width:none}
   .g-sec > h2{font-size:19px} .g-sec > p.lead{font-size:12px}
-  .g-step{padding:12px 16px} .g-step p{font-size:12px} .g-doc p{font-size:12px}
-  .g-sec{margin-bottom:20px}
-  .g-sec.brk{break-before:page}
+  .g-step{padding:10px 14px} .g-step p{font-size:11.5px} .g-doc p{font-size:11.5px}
+  .g-step .meta{margin-top:6px} .g-tag{font-size:10px;padding:3px 7px}
+  .g-checks li{margin-bottom:6px} .g-note{margin-top:6px;font-size:11.5px}
+  .g-sec{margin-bottom:13px}
+  .g-sec.brk{break-before:auto}
   .g-sec > h2,.g-sec > p.lead{break-after:avoid}
   .g-step,.g-doc,.card{break-inside:avoid}
   .g-table{break-inside:auto}
@@ -118,6 +166,85 @@
 <main id="contenu" class="wrap">
 
 <section class="g-sec">
+<h2>Le parcours en un coup d’œil</h2>
+<p class="lead">Cinq moments, deux acteurs, quatre dates. Tout le reste du guide détaille cette ligne.</p>
+
+<figure class="g-fig">
+<svg viewBox="0 0 1000 300" role="img" aria-label="Frise du parcours : cinq moments, du bon de commande à la facture">
+  <line x1="120" y1="150" x2="980" y2="150" stroke="#D4111F" stroke-width="2"/>
+  <!-- repères -->
+  <g font-size="12" font-weight="700" fill="#355D8D" text-anchor="middle">
+    <circle cx="198" cy="150" r="15" fill="#D4111F"/><text x="198" y="155" fill="#fff" font-size="13">1</text>
+    <circle cx="374" cy="150" r="15" fill="#D4111F"/><text x="374" y="155" fill="#fff" font-size="13">2</text>
+    <circle cx="550" cy="150" r="15" fill="#D4111F"/><text x="550" y="155" fill="#fff" font-size="13">3</text>
+    <circle cx="726" cy="150" r="15" fill="#D4111F"/><text x="726" y="155" fill="#fff" font-size="13">4</text>
+    <circle cx="902" cy="150" r="15" fill="#D4111F"/><text x="902" y="155" fill="#fff" font-size="13">5</text>
+  </g>
+  <!-- branche haute : partenaire -->
+  <g>
+    <line x1="198" y1="135" x2="198" y2="112" stroke="#639EE4" stroke-width="2"/>
+    <line x1="374" y1="135" x2="374" y2="112" stroke="#639EE4" stroke-width="2"/>
+    <line x1="726" y1="135" x2="726" y2="112" stroke="#639EE4" stroke-width="2"/>
+  </g>
+  <!-- branche basse : régie -->
+  <g>
+    <line x1="550" y1="165" x2="550" y2="188" stroke="#355D8D" stroke-width="2"/>
+    <line x1="902" y1="165" x2="902" y2="188" stroke="#355D8D" stroke-width="2"/>
+  </g>
+  <!-- cartes partenaire -->
+  <g>
+    <rect x="120" y="38" width="156" height="76" rx="7" fill="#fff" stroke="#e1e6dd"/>
+    <rect x="120" y="38" width="156" height="4" rx="2" fill="#639EE4"/>
+    <text x="132" y="66" font-size="13" font-weight="800" fill="#355D8D">La commande</text>
+    <text x="132" y="84" font-size="11" fill="#4a5b70">Signer le bon</text>
+    <text x="132" y="99" font-size="11" fill="#4a5b70">de commande</text>
+
+    <rect x="296" y="38" width="156" height="76" rx="7" fill="#fff" stroke="#e1e6dd"/>
+    <rect x="296" y="38" width="156" height="4" rx="2" fill="#639EE4"/>
+    <text x="308" y="66" font-size="13" font-weight="800" fill="#355D8D">Les éléments</text>
+    <text x="308" y="84" font-size="11" fill="#4a5b70">Envoyer encart</text>
+    <text x="308" y="99" font-size="11" fill="#4a5b70">et logo</text>
+
+    <rect x="648" y="38" width="156" height="76" rx="7" fill="#fff" stroke="#e1e6dd"/>
+    <rect x="648" y="38" width="156" height="4" rx="2" fill="#639EE4"/>
+    <text x="660" y="66" font-size="13" font-weight="800" fill="#355D8D">La validation</text>
+    <text x="660" y="84" font-size="11" fill="#4a5b70">Signer le BAT</text>
+    <text x="660" y="99" font-size="11" fill="#4a5b70">mis en page</text>
+  </g>
+  <!-- cartes régie -->
+  <g>
+    <rect x="472" y="188" width="156" height="76" rx="7" fill="#fff" stroke="#e1e6dd"/>
+    <rect x="472" y="188" width="156" height="4" rx="2" fill="#355D8D"/>
+    <text x="484" y="216" font-size="13" font-weight="800" fill="#355D8D">Le contrôle</text>
+    <text x="484" y="234" font-size="11" fill="#4a5b70">Mesurer et rendre</text>
+    <text x="484" y="249" font-size="11" fill="#4a5b70">un verdict chiffré</text>
+
+    <rect x="824" y="188" width="156" height="76" rx="7" fill="#fff" stroke="#e1e6dd"/>
+    <rect x="824" y="188" width="156" height="4" rx="2" fill="#355D8D"/>
+    <text x="836" y="216" font-size="13" font-weight="800" fill="#355D8D">Facture et parution</text>
+    <text x="836" y="234" font-size="11" fill="#4a5b70">Facturer, imprimer,</text>
+    <text x="836" y="249" font-size="11" fill="#4a5b70">archiver</text>
+  </g>
+  <!-- dates -->
+  <g font-size="11" font-weight="800" fill="#D4111F" text-anchor="middle">
+    <text x="198" y="290">avant le 01/12</text>
+    <text x="374" y="290">avant le 06/12</text>
+    <text x="550" y="290">sous 24 h</text>
+    <text x="726" y="290">avant le 07/12</text>
+    <text x="902" y="290">18/12 + 30 j</text>
+  </g>
+</svg>
+<div class="g-legend">
+  <span><i style="background:#639EE4"></i>Ce que fait le partenaire</span>
+  <span><i style="background:#355D8D"></i>Ce que fait la régie</span>
+  <span><i style="background:#D4111F"></i>Les échéances</span>
+</div>
+<figcaption>Trois gestes pour le partenaire, deux pour la régie. <b>Chaque point porte une date et une preuve conservée.</b></figcaption>
+</figure>
+
+</section>
+
+<section class="g-sec">
 <h2>Trois documents, trois rôles</h2>
 <p class="lead">Les confondre est la source de presque tous les litiges. Chacun prouve une chose différente, et aucun ne remplace les autres.</p>
 <div class="g-docs">
@@ -140,7 +267,20 @@
     <div class="g-sans">Sans elle : rien à encaisser, rien à relancer.</div>
   </div>
 </div>
-<p class="g-note">Deux règles en découlent, sans exception : <b>pas de fabrication sans BAT signé</b>, <b>pas de facture sans bon de commande signé</b>.</p>
+<div class="g-chain">
+  <div class="node"><b>BON DE COMMANDE</b><span>Il rend la commande ferme : format, prix, échéances.</span></div>
+  <div class="gate" aria-hidden="true"><em>1</em></div>
+  <div class="node"><b>BAT SIGNÉ</b><span>Il autorise la fabrication du visuel mis en page.</span></div>
+  <div class="gate" aria-hidden="true"><em>2</em></div>
+  <div class="node end"><b>FACTURE</b><span>Elle constate la prestation due, à 30 jours.</span></div>
+</div>
+<div class="g-locks">
+  <div><b>Avant la mise en page</b><span>bon de commande signé</span></div>
+  <div><b>Avant l'impression</b><span>BAT signé</span></div>
+  <div><b>Avant la facture</b><span>bon de commande signé</span></div>
+</div>
+
+<p class="g-note">Deux verrous, sans exception : <b>pas de fabrication sans BAT signé</b>, <b>pas de facture sans bon de commande signé</b>. Chaque verrou saute si le document manque — c'est ce qui protège l'établissement.</p>
 </section>
 
 <section class="g-sec">
