@@ -43,12 +43,29 @@
 @media print{.g-fig{padding:14px;break-inside:avoid}.g-chain{grid-template-columns:1fr 30px 1fr 30px 1fr}.g-fig figcaption{font-size:10.5px}}
 
 
+
+/* Phases de suivi */
+.g-phases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.g-phase{border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.g-phase h4{margin:0;background:var(--navy);color:#fff;font-size:11px;font-weight:800;letter-spacing:1.4px;
+  text-transform:uppercase;padding:9px 12px}
+.g-phase.final h4{background:var(--red)}
+.g-phase ul{list-style:none;margin:0;padding:10px 12px;display:grid;gap:7px}
+.g-phase li{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:center;font-size:11.5px;color:var(--ink);line-height:1.3}
+.g-phase li i{font-style:normal;background:var(--pale);color:var(--navy);font-weight:800;font-size:10.5px;
+  width:22px;height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center}
+.g-phase li.now i{background:var(--red);color:#fff}
+@media print{.g-phases{gap:9px;break-inside:avoid;grid-template-columns:1fr 1fr}.g-phase li{font-size:10px;gap:6px}
+ .g-phase li i{width:18px;height:18px;font-size:9.5px}.g-phase h4{font-size:9.5px;padding:7px 9px}}
+@media (max-width:860px){.g-phases{grid-template-columns:1fr 1fr}}
+
 /* Chaîne documentaire et verrous */
 .g-chain{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:stretch;margin:4px 0 18px}
-.g-chain .node{border:1px solid var(--line);border-radius:8px;background:#fff;padding:16px 18px;border-top:4px solid var(--navy)}
-.g-chain .node.end{border-top-color:var(--red)}
-.g-chain .node b{display:block;font-size:13px;font-weight:800;color:var(--navy);letter-spacing:.5px}
-.g-chain .node span{display:block;font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45}
+.g-chain .node{border-radius:8px;background:var(--navy);padding:16px 18px;border-bottom:4px solid var(--blue)}
+.g-chain .node.end{background:var(--red);border-bottom-color:#8d0b15}
+.g-chain .node b{display:block;font-size:13px;font-weight:800;color:#fff;letter-spacing:.8px}
+.g-chain .node span{display:block;font-size:12px;color:#dbe7f6;margin-top:5px;line-height:1.45}
+.g-chain .node.end span{color:#ffe3e5}
 .g-chain .gate{display:flex;align-items:center;justify-content:center;position:relative}
 .g-chain .gate::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--red)}
 .g-chain .gate em{position:relative;background:var(--red);color:#fff;font-style:normal;font-weight:800;
@@ -361,6 +378,36 @@
 <tr><td>La facture n'est pas payée</td><td>À l'échéance, sans rappel : pénalités au taux BCE majoré de 10 points et 40 € forfaitaires. La diffusion peut être suspendue.</td></tr>
 </tbody>
 </table>
+</section>
+
+<section class="g-sec">
+<h2>Où en est le dossier</h2>
+<p class="lead">Chaque dossier porte un numéro. Il dit à lui seul ce qui manque, sans relire les échanges.</p>
+
+<figure class="g-fig">
+<div class="g-phases">
+  <div class="g-phase"><h4>Prospect</h4><ul>
+    <li><i>1</i>E-mail envoyé, ouvert</li>
+    <li><i>2</i>A cliqué</li>
+    <li><i>3</i>A visité le site</li>
+    <li><i>4</i>A répondu au formulaire</li>
+  </ul></div>
+  <div class="g-phase"><h4>Commande</h4><ul>
+    <li><i>5</i>Bon de commande téléchargé</li>
+    <li><i>6</i>Bon de commande reçu</li>
+  </ul></div>
+  <div class="g-phase"><h4>Production</h4><ul>
+    <li><i>7</i>Documents reçus</li>
+    <li><i>8</i>BAT envoyé</li>
+    <li><i>9</i>BAT signé</li>
+  </ul></div>
+  <div class="g-phase final"><h4>Bouclé</h4><ul>
+    <li class="now"><i>10</i>Facturé, dossier clos</li>
+  </ul></div>
+</div>
+<figcaption>Les dix statuts du suivi, groupés en quatre phases. <b>Un dossier qui n'avance pas se repère à son numéro</b> : bloqué en 6, il manque un bon de commande ; bloqué en 8, c'est le BAT qui n'est pas revenu.</figcaption>
+</figure>
+
 </section>
 
 <section class="g-sec">
