@@ -1,0 +1,223 @@
+!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
+<title>Statistiques de campagne — Régie Callo 2027</title>
+<style>
+  :root{--bleu:#639ee4;--bleu-fonce:#2f5a8f;--rouge:#d0121b;--encre:#1f2a3a;--gris:#3d4756;
+        --pale:#eef2f7;--bord:#e2e7ee;--vert:#1e7b3c;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--pale);font-family:Arial,Helvetica,sans-serif;color:var(--encre);}
+  .band{background:var(--bleu);border-top:4px solid var(--rouge);color:#fff;padding:22px 20px;}
+  .band .in{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;
+            align-items:center;gap:16px;flex-wrap:wrap;}
+  .band b{font-size:13px;letter-spacing:2px;display:block;}
+  .band h1{font-size:24px;margin:4px 0 0 0;font-weight:bold;}
+  .band button{background:#fff;color:var(--bleu-fonce);border:0;font-family:inherit;font-weight:bold;
+        font-size:15px;padding:12px 20px;border-radius:50px;cursor:pointer;}
+  .band button:hover{background:#f3f7fc;}
+  .band button[disabled]{opacity:.6;cursor:default;}
+  main{max-width:1080px;margin:22px auto 60px auto;padding:0 16px;}
+  .etat{font-size:14px;color:#5b6675;margin:0 0 14px 0;}
+  .etat b{color:var(--encre);}
+  .grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px;}
+  .kpi{background:#fff;border-radius:10px;padding:20px 18px;border-left:5px solid var(--bleu);}
+  .kpi.rouge{border-left-color:var(--rouge);}
+  .kpi.vert{border-left-color:var(--vert);}
+  .kpi .lib{font-size:12px;font-weight:bold;letter-spacing:1.4px;color:#5b6675;text-transform:uppercase;}
+  .kpi .val{font-size:36px;line-height:42px;font-weight:bold;color:var(--encre);margin-top:6px;}
+  .kpi .val small{font-size:18px;font-weight:bold;color:var(--bleu-fonce);}
+  .kpi .det{font-size:13px;color:#5b6675;margin-top:4px;}
+  h2{font-size:19px;margin:34px 0 10px 0;}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;font-size:15px;}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--bord);}
+  th{background:#f3f7fc;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#5b6675;}
+  td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;}
+  tr:last-child td{border-bottom:0;}
+  .vide{color:#9aa4b2;}
+  .methode{background:#fff;border-radius:10px;padding:22px 24px;font-size:14px;line-height:22px;color:var(--gris);}
+  .methode code{background:#f3f7fc;padding:1px 5px;border-radius:4px;font-size:13px;}
+  .methode strong{color:var(--encre);}
+  .alerte{background:#fdf3f3;border-left:5px solid var(--rouge);border-radius:6px;
+          padding:14px 18px;font-size:15px;line-height:22px;color:#8f1017;margin:0 0 14px 0;}
+  @media (max-width:640px){
+    .kpi .val{font-size:29px;line-height:34px;}
+    table{font-size:13.5px;} th,td{padding:10px 9px;}
+    .band h1{font-size:20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="band">
+  <div class="in">
+    <div>
+      <b>RÉGIE PUBLICITAIRE · LYCÉE MARCEL CALLO</b>
+      <h1>Statistiques de la campagne partenaires 2027</h1>
+    </div>
+    <button id="maj" type="button">Actualiser</button>
+  </div>
+</div>
+
+<main>
+  <p class="etat" id="etat">Connexion à la feuille de suivi…</p>
+  <div id="alerte"></div>
+
+  <div class="grille" id="kpis"></div>
+
+  <h2>Par canal d'envoi</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Canal</th>
+        <th class="n">Contacts</th>
+        <th class="n">Envoyés</th>
+        <th class="n">Ouverts</th>
+        <th class="n">Taux d'ouverture</th>
+        <th class="n">Clics</th>
+        <th class="n">CTR</th>
+        <th class="n">Réponses</th>
+        <th class="n">Désinscrits</th>
+      </tr>
+    </thead>
+    <tbody id="canaux">
+      <tr><td colspan="9" class="vide">Chargement…</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Méthode — ce que ces chiffres prouvent, et ce qu'ils ne prouvent pas</h2>
+  <div class="methode">
+    <p style="margin:0 0 12px 0"><strong>Formules.</strong>
+      Ouverture = <code>ouverts / envoyés</code> · CTR = <code>clics / envoyés</code> ·
+      CTOR = <code>clics / ouverts</code> · Réponses = <code>réponses / contacts</code> ·
+      Désinscription = <code>désinscrits / envoyés</code>.</p>
+    <p style="margin:0 0 12px 0"><strong>Les ouvertures sont sous-estimées.</strong>
+      Apple Mail et Gmail préchargent ou bloquent le pixel de suivi. Un taux d'ouverture
+      bas ne signifie pas qu'un message n'a pas été lu&nbsp;; un taux haut ne garantit pas
+      une lecture réelle. Seul le <strong>clic</strong> est un signal fiable d'intérêt.</p>
+    <p style="margin:0 0 12px 0"><strong>Un clic n'est pas un devis.</strong>
+      Le seul indicateur qui engage de l'argent est le nombre de bons de commande reçus
+      et le montant encaissé — visibles dans l'onglet « Tableau de bord » de la feuille.</p>
+    <p style="margin:0"><strong>Aucun repère sectoriel n'est affiché ici.</strong>
+      Les moyennes de marché circulant sur l'e-mailing B2B sont invérifiables et fausses
+      dès que la liste change. Les objectifs se fixent sur vos propres envois successifs,
+      d'une vague à l'autre.</p>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // Mêmes valeurs que js/config.js du site (le jeton n'est pas une authentification :
+  // il bloque seulement les appels automatisés banals).
+  // MAJ 2026-11-13 : bascule sur le déploiement v2.1 (le précédent servait
+  // encore le code v2.0, sans les agrégats KPI).
+  var API = 'https://script.google.com/macros/s/AKfycbysxy7DX7ai2Ics3Q2KQOrAJGKLpsVNE8AsFIsFcKdGOA2fb8WpTqaEMQF1OLQJ0t1H/exec';
+  var TOKEN = 'callo2027-nQ7xW2';
+
+  var etat = document.getElementById('etat');
+  var alerte = document.getElementById('alerte');
+  var kpis = document.getElementById('kpis');
+  var canaux = document.getElementById('canaux');
+  var btn = document.getElementById('maj');
+  var seq = 0;
+
+  function nb(v, d) {
+    if (v === null || v === undefined || v === '') return '—';
+    return Number(v).toLocaleString('fr-FR', { maximumFractionDigits: d || 0 });
+  }
+  function pc(n, d) {
+    if (!d) return '—';                       // jamais « 0,00 % » sur un diviseur nul
+    return (100 * n / d).toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' %';
+  }
+  function carte(lib, val, det, cls) {
+    return '<div class="kpi ' + (cls || '') + '"><div class="lib">' + lib + '</div>' +
+           '<div class="val">' + val + '</div>' +
+           (det ? '<div class="det">' + det + '</div>' : '') + '</div>';
+  }
+
+  function rendre(d) {
+    var quand = d.genere ? new Date(d.genere) : null;
+    var quandTxt = (quand && !isNaN(quand.getTime()))
+      ? quand.toLocaleString('fr-FR')
+      : 'horodatage non fourni par le script';
+    etat.innerHTML = 'Dernière lecture : <b>' + quandTxt + '</b> · ' +
+      nb(d.contacts) + ' contact(s) suivi(s) dans la feuille';
+
+    kpis.innerHTML =
+      carte('Envoyés', nb(d.envoyes), 'e-mails partis', '') +
+      carte("Taux d'ouverture", pc(d.ouverts, d.envoyes), nb(d.ouverts) + ' ouvertures uniques', '') +
+      carte('Clics', nb(d.clics), 'CTR ' + pc(d.clics, d.envoyes), 'rouge') +
+      carte('Visites du site', nb(d.visites), 'après clic sur un lien', '') +
+      carte('Réponses', nb(d.reponses), 'dont ' + nb(d.oui) + ' « oui »', 'vert') +
+      carte('Désinscriptions', nb(d.desinscriptions), pc(d.desinscriptions, d.envoyes) + ' des envoyés', 'rouge');
+
+    var cles = Object.keys(d.parCanal || {});
+    if (!cles.length) {
+      canaux.innerHTML = '<tr><td colspan="9" class="vide">Aucune donnée attribuée pour le moment. ' +
+        'Les lignes apparaissent dès le premier clic sur un lien de l\u2019e-mailing.</td></tr>';
+      return;
+    }
+    cles.sort();
+    canaux.innerHTML = cles.map(function (k) {
+      var c = d.parCanal[k];
+      return '<tr><td><strong>' + k + '</strong></td>' +
+        '<td class="n">' + nb(c.contacts) + '</td>' +
+        '<td class="n">' + nb(c.envoyes) + '</td>' +
+        '<td class="n">' + nb(c.ouverts) + '</td>' +
+        '<td class="n">' + pc(c.ouverts, c.envoyes) + '</td>' +
+        '<td class="n">' + nb(c.clics) + '</td>' +
+        '<td class="n">' + pc(c.clics, c.envoyes) + '</td>' +
+        '<td class="n">' + nb(c.reponses) + '</td>' +
+        '<td class="n">' + nb(c.desinscriptions) + '</td></tr>';
+    }).join('');
+  }
+
+  function charger() {
+    btn.disabled = true;
+    btn.textContent = 'Lecture…';
+    etat.textContent = 'Connexion à la feuille de suivi…';
+    alerte.innerHTML = '';
+
+    // fetch() direct : vérifié le 13/11/2026, l'Apps Script renvoie bien
+    // `access-control-allow-origin: *` sur la redirection ET sur la réponse
+    // finale, donc une page statique GitHub Pages peut lire le JSON.
+    var ctrl = new AbortController();
+    var minuteur = setTimeout(function () { ctrl.abort(); }, 12000);
+
+    fetch(API + '?action=kpi&k=' + encodeURIComponent(TOKEN), { signal: ctrl.signal })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        if (!d || !d.ok) throw new Error('réponse en erreur');
+        rendre(d);
+      })
+      .catch(function (e) {
+        etat.textContent = 'Lecture impossible.';
+        alerte.innerHTML = '<div class="alerte"><strong>Aucune donnée affichée.</strong> ' +
+          (e && e.name === 'AbortError'
+            ? 'Le serveur n\u2019a pas répondu dans les 12 secondes.'
+            : 'La feuille n\u2019a pas pu être lue (' + (e && e.message ? e.message : 'erreur réseau') + ').') +
+          ' Rien n\u2019est inventé : tant que la lecture échoue, la page reste vide.</div>';
+        kpis.innerHTML = '';
+        canaux.innerHTML = '<tr><td colspan="9" class="vide">—</td></tr>';
+      })
+      .then(function () {
+        clearTimeout(minuteur);
+        btn.disabled = false;
+        btn.textContent = 'Actualiser';
+      });
+  }
+
+  btn.addEventListener('click', charger);
+  charger();
+})();
+</script>
+</body>
+</html>
