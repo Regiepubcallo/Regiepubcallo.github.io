@@ -50,8 +50,8 @@ var HEADERS = [
   // --- comportement de visite (remplissage automatique) ---
   'Connexion (jour/heure)', 'Navigateur', 'Appareil', 'Écran',
   'Durée de visite (s)', 'Pages vues', 'Dernière page vue', 'Nom dossier Drive',
-  'Fichiers présents dans Drive', 'Dernier contrôle Drive'
-];
+  'Fichiers présents dans Drive', 'Dernier contrôle Drive',
+  'N° bon de commande'];
 var DATE_COLS = ['Date envoi e-mail', 'Date ouverture e-mail', 'Date clic e-mail', 'Date 1re visite site',
   'Date réponse formulaire', 'Date DL plaquette', 'Date DL CGV', 'Date DL bon de commande',
   'Date réception bon de commande', 'Date réception encart', 'Date réception logo',
@@ -353,6 +353,26 @@ function handleCommentaire_(b) {
   return { ok: true };
 }
 
+
+/**
+ * Attribue un numéro de bon de commande, une seule fois par dossier.
+ *
+ * Le numéro suit un compteur conservé dans les propriétés du script : il ne
+ * recule jamais, même si une ligne est supprimée du classeur. Un dossier qui
+ * renvoie son bon de commande garde le numéro déjà attribué.
+ */
+function numeroBC_(row) {
+  var deja = String(get_(row, 'N° bon de commande') || '').trim();
+  if (deja) return deja;
+  var props = PropertiesService.getScriptProperties();
+  var n = (parseInt(props.getProperty('COMPTEUR_BC') || '0', 10) || 0) + 1;
+  props.setProperty('COMPTEUR_BC', String(n));
+  var numero = '2027-RPC-' + ('000' + n).slice(-3);
+  set_(row, 'N° bon de commande', numero);
+  log_('NUMERO', '', numero + ' attribué');
+  return numero;
+}
+
 function handleDepot_(b) {
   var refus = valider_(b);
   if (refus) { log_('REFUS', '', refus); return { ok: false, error: refus }; }
@@ -379,7 +399,10 @@ function handleDepot_(b) {
     folder.createFile(blob);
     if (cols[f.field]) set_(row, cols[f.field], maintenant);
     // date de mise sous Drive, par document
-    if (f.field === 'bon') set_(row, 'Date mise sous Drive BC', maintenant);
+    if (f.field === 'bon') {
+      set_(row, 'Date mise sous Drive BC', maintenant);
+      numeroBC_(row);
+    }
     if (f.field === 'bat') set_(row, 'Date mise sous Drive BAT', maintenant);
   });
   set_(row, 'Dossier Drive', folder.getUrl());
@@ -388,13 +411,15 @@ function handleDepot_(b) {
   log_('DEPOT', email, files.length + ' fichier(s) — ' + folder.getUrl());
   finish_(row);
   notify_('Dépôt de documents : ' + entreprise, 'Fichiers reçus : ' + files.map(function (f) { return f.field + ' = ' + f.name; }).join(', ') +
-    '\nDossier : ' + folder.getUrl() + '\nE-mail : ' + email + '\nBAT à envoyer sous 3 jours ouvrés.');
+    '\nDossier : ' + folder.getUrl() + '\nN° bon de commande : ' + (get_(row, 'N° bon de commande') || '—') +
+    '\nE-mail : ' + email + '\nBAT à envoyer sous 3 jours ouvrés.');
   if (CONFIG.SEND_ACK_TO_PARTNER) {
     try {
       MailApp.sendEmail({
         to: email, name: 'Régie publicitaire Callo', replyTo: CONFIG.NOTIFY_EMAIL,
         subject: 'Callo 2027 : nous avons bien reçu vos documents',
         body: 'Bonjour,\n\nMerci de votre envoi : le bon de commande, votre encart et votre logo sont bien reçus.\n' +
+          'Votre référence de dossier : ' + (get_(row, 'N° bon de commande') || '—') + '\n' +
           'Le professionnel en charge de la mise en page vous adressera un BAT à valider sous 3 jours ouvrés.\n\n' +
           'Une question ? Répondez à ce message ou contactez Damien BOUGREAU, Responsable Suivi Partenaires : ' + CONFIG.NOTIFY_EMAIL + ' · +33 7 66 88 93 32.\n\n' +
           'Régie publicitaire Marcel Callo · OGEC Lycée Marcel Callo, 35600 Redon'
