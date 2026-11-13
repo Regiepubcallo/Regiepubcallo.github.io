@@ -138,6 +138,12 @@
     border:1.5px solid var(--noir);background:#fff;color:var(--noir);letter-spacing:.06em;cursor:pointer;text-transform:uppercase}
   .sign-note{font-size:6.5pt;font-weight:800;color:#1E7A3C;margin-top:.8mm;line-height:1.25;font-style:normal}
 
+  /* Bouton d'impression de l'annexe */
+  .btn-planche{font-family:inherit;font-size:8.5pt;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;padding:2.5mm 6mm;border:2px solid var(--noir);background:var(--noir);
+    color:#fff;cursor:pointer}
+  .btn-planche:hover{background:var(--rouge);border-color:var(--rouge)}
+
   /* Pied */
   .pied{margin-top:3mm;border-top:2.5px solid var(--noir);padding-top:2mm;display:flex;justify-content:space-between;gap:5mm;font-size:6.8pt;font-weight:700;color:var(--gris);line-height:1.5}
   .pied .g{max-width:128mm}
@@ -147,16 +153,19 @@
   @page{size:A4 portrait;margin:0}
   @media print{
     body{background:#fff}
-    .outil,.avert,.pad-btns{display:none !important}
+    .outil,.avert,.pad-btns,.no-print,.btn-planche{display:none !important}
     .feuille{margin:0;box-shadow:none;width:210mm;height:auto;min-height:0;overflow:visible}
     .feuille + .feuille{page-break-before:always;break-before:page}
+    /* La planche d'implantation est une ANNEXE : elle ne part pas avec le
+       document signé. Ctrl+P imprime le Pré-BAT seul, une page.
+       Le bouton « Imprimer la planche » l'isole pour l'imprimer à part. */
+    .feuille--annexe{display:none !important}
+    body.impression-planche .feuille--annexe{display:block !important}
+    body.impression-planche .feuille:not(.feuille--annexe){display:none !important}
+    body.impression-planche .feuille + .feuille{page-break-before:auto}
   }
   .avert{max-width:210mm;margin:0 auto 14px;font-size:11px;color:#fff;font-weight:700;line-height:1.5;text-align:center}
 </style>
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
 
@@ -504,7 +513,7 @@ function feuillePlanche(ref) {
     </tr>`).join('');
 
   return `
-  <div class="feuille" id="feuille2">
+  <div class="feuille feuille--annexe" id="feuille2">
     <div class="tete">
       <img src="logo_marcel_callo.png" alt="Marcel Callo">
       <div class="tit">
@@ -514,7 +523,7 @@ function feuillePlanche(ref) {
       <div class="refbox">
         <b>RÉFÉRENCE</b>${ref}-K
         <b>ÉMIS LE</b>${dateFR(new Date())}
-        <b>DOCUMENT</b>2 / 2
+        <b>DOCUMENT</b>Annexe
       </div>
     </div>
     <div class="bandeau-rouge"></div>
@@ -545,7 +554,19 @@ function feuillePlanche(ref) {
         OGEC Lycée Marcel Callo<br>SIRET 777 722 216 00010<br>Régie · +33 7 66 88 93 32
       </div>
     </div>
+    <div class="no-print" style="margin-top:4mm;text-align:center">
+      <button type="button" class="btn-planche" onclick="imprimerPlanche()">
+        Imprimer la planche d'implantation
+      </button>
+    </div>
   </div>`;
+}
+
+/* Imprime l'annexe seule, sans le Pré-BAT signé. */
+function imprimerPlanche() {
+  document.body.classList.add('impression-planche');
+  window.print();
+  setTimeout(function () { document.body.classList.remove('impression-planche'); }, 1500);
 }
 
 /* ---------- Planche kakemono (page 2) ---------- */
