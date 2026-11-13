@@ -79,7 +79,8 @@
 @media print{.g-chain{grid-template-columns:1fr 34px 1fr 34px 1fr}.g-chain .node{padding:11px 13px}
  .g-chain .node b{font-size:11.5px}.g-chain .node span{font-size:10.5px}.g-locks{grid-template-columns:repeat(3,1fr)}
  .g-locks span{font-size:12px}
- .g-chain,.g-locks,.g-fig{break-inside:avoid}}
+ .g-chain,.g-locks{break-inside:avoid}
+ .g-fig{break-inside:auto}}
 
 /* Trois documents */
 .g-docs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
@@ -88,6 +89,28 @@
 .g-doc h3{margin:0;font-size:17px;font-weight:800;color:var(--navy)}
 .g-doc p{margin:0;font-size:14px;line-height:1.6;color:var(--ink)}
 .g-doc .g-sans{margin-top:auto;font-size:13px;font-weight:600;color:var(--red);border-top:1px solid var(--line);padding-top:10px}
+
+
+/* Planche des écrans */
+.g-plate{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.g-plate-i img{width:100%;height:auto;display:block}
+.g-plate-i p{margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.45}
+.g-plate-i p b{display:block;color:var(--navy);font-size:12.5px;font-weight:800;margin-bottom:3px}
+@media (max-width:860px){.g-plate{grid-template-columns:1fr}}
+@media print{.g-plate{gap:12px;break-inside:auto;grid-template-columns:repeat(2,minmax(0,1fr))}.g-plate-i{break-inside:avoid}
+ .g-plate-i p{font-size:10px}.g-plate-i p b{font-size:11px}}
+
+/* Captures d'écran des étapes */
+.g-step{grid-template-columns:44px 1fr 250px}
+.g-shot img{width:100%;height:auto;display:block}
+.g-shot-cap{font-size:11px;color:var(--muted);margin:7px 0 0;line-height:1.4}
+.g-shot-cap b{color:var(--red);font-weight:800;letter-spacing:.5px}
+.g-shot-none{border:2px dashed #9fb0c4;border-radius:8px;padding:14px;background:#f7fafc}
+.g-shot-none b{display:block;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--navy)}
+.g-shot-none span{display:block;font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45}
+@media (max-width:860px){.g-step{grid-template-columns:40px 1fr}.g-shot{grid-column:1/-1;max-width:340px}}
+@media print{.g-step{grid-template-columns:38px 1fr 218px}.g-shot{grid-column:auto;max-width:none}
+ .g-shot-cap{font-size:9.5px;margin-top:5px}}
 
 /* Frise des cinq moments */
 .g-steps{display:grid;gap:12px}
@@ -148,8 +171,9 @@
   .g-sec > h2{font-size:19px} .g-sec > p.lead{font-size:12px}
   .g-step{padding:10px 14px} .g-step p{font-size:11.5px} .g-doc p{font-size:11.5px}
   .g-step .meta{margin-top:6px} .g-tag{font-size:10px;padding:3px 7px}
-  .g-checks li{margin-bottom:6px} .g-note{margin-top:6px;font-size:11.5px}
-  .g-sec{margin-bottom:13px}
+  .g-checks li{margin-bottom:4px} .g-note{margin-top:5px;font-size:11px}
+  .g-step{padding:9px 13px} .card{padding:12px}
+  .g-sec{margin-bottom:9px}
   .g-sec.brk{break-before:auto}
   .g-sec > h2,.g-sec > p.lead{break-after:avoid}
   .g-step,.g-doc,.card{break-inside:avoid}
@@ -174,10 +198,10 @@
 </div></section>
 
 <section class="proof" aria-label="Les quatre dates de la saison 2027"><div class="proof-in">
-<div><b>01/12</b><span>réserver l'emplacement</span></div>
-<div><b>06/12</b><span>transmettre les éléments</span></div>
-<div><b>07/12</b><span>retourner le BAT signé</span></div>
-<div><b>18/12</b><span>parution du magazine</span></div>
+<div><b>01/12</b><span>date butoir — réserver l'emplacement</span></div>
+<div><b>06/12</b><span>date butoir — transmettre les éléments</span></div>
+<div><b>07/12</b><span>date butoir — retourner le BAT signé</span></div>
+<div><b>18/12</b><span>date de parution du magazine</span></div>
 </div></section>
 
 <main id="contenu" class="wrap">
@@ -256,7 +280,7 @@
   <span><i style="background:#355D8D"></i>Ce que fait la régie</span>
   <span><i style="background:#D4111F"></i>Les échéances</span>
 </div>
-<figcaption>Trois gestes pour le partenaire, deux pour la régie. <b>Chaque point porte une date et une preuve conservée.</b></figcaption>
+<figcaption>Trois gestes pour le partenaire, deux pour la régie. <b>Les dates en rouge sont des dates butoirs</b> : au-delà, le dossier ne peut plus être traité dans les délais de fabrication.</figcaption>
 </figure>
 
 </section>
@@ -334,33 +358,53 @@
     <h3>La commande</h3>
     <p>Le partenaire reçoit le devis, choisit son format, télécharge le bon de commande, le signe et le renvoie avec les CGV acceptées.</p>
     <div class="meta"><span class="g-tag">Partenaire</span><span class="g-tag date">avant le 01/12</span><span class="g-tag">Preuve : PDF signé</span></div>
+  
   </div></div>
 
   <div class="g-step"><div class="n">2</div><div>
     <h3>Les éléments</h3>
     <p>Encart et, si l'offre partenaire a été souscrite, le logo. On conserve toujours le fichier d'origine tel qu'il a été déposé, jamais une version retouchée.</p>
     <div class="meta"><span class="g-tag">Partenaire</span><span class="g-tag date">avant le 06/12</span><span class="g-tag">Preuve : fichiers d'origine</span></div>
+  
   </div></div>
 
   <div class="g-step"><div class="n">3</div><div>
     <h3>Le contrôle</h3>
     <p>Dès le dépôt, le fichier est mesuré : proportions et définition à la taille finale. Le verdict tombe en quelques millisecondes, et le Pré-BAT porte le motif chiffré.</p>
     <div class="meta"><span class="g-tag">Régie</span><span class="g-tag date">sous 24 h</span><span class="g-tag">Preuve : Pré-BAT référencé</span></div>
+  
   </div></div>
 
   <div class="g-step"><div class="n">4</div><div>
     <h3>La validation</h3>
     <p>Le BAT est envoyé, daté, avec son échéance de retour. Le partenaire écrit « Bon pour accord », date et signe. Une seule série de corrections est admise.</p>
     <div class="meta"><span class="g-tag">Partenaire</span><span class="g-tag date">avant le 07/12</span><span class="g-tag">Preuve : BAT signé</span></div>
+  
   </div></div>
 
   <div class="g-step"><div class="n">5</div><div>
     <h3>La facture, puis la parution</h3>
     <p>La facture part à réception du BAT signé. Le paiement est à 30 jours. Après parution, on conserve la page du magazine : c'est la preuve d'exécution.</p>
-    <div class="meta"><span class="g-tag">Éditeur</span><span class="g-tag date">18/12 puis 30 j</span><span class="g-tag">Preuve : facture + page parue</span></div>
+    <div class="meta"><span class="g-tag">Éditeur</span><span class="g-tag date">18/12 puis 30 j</span><span class="g-tag">Preuve : facture + page parue</span><p class="g-shot-cap"><b>Où :</b> aucune action en ligne — le suivi se fait dans le classeur.</p></div></div>
   </div></div>
 
 </div>
+</section>
+
+<section class="g-sec">
+<h2>À l’écran, où ça se passe</h2>
+<p class="lead">Les quatre moments où le partenaire agit ou reçoit une réponse, tels qu’il les verra.</p>
+
+<figure class="g-fig" style="margin-top:4px">
+<div class="g-plate">
+  <div class="g-plate-i"><img src="assets/guide/etape1.png" alt="Bloc du bon de commande sur la page de remerciement"><p><b>1 · La commande</b>Page de remerciement, bloc « Votre bon de commande » : choisir la variante, puis télécharger.</p></div>
+  <div class="g-plate-i"><img src="assets/guide/etape2.png" alt="Champ de dépôt de l'encart"><p><b>2 · Les éléments</b>Page de dépôt, champ 2 : le format commandé, puis le fichier de l'encart.</p></div>
+  <div class="g-plate-i"><img src="assets/guide/etape3.png" alt="Verdict du contrôle qualité"><p><b>3 · Le contrôle</b>Le verdict s'affiche sous le fichier, avec la mesure exacte et le motif s'il y a lieu.</p></div>
+  <div class="g-plate-i"><img src="assets/guide/etape4.png" alt="Bloc bon pour accord du Pré-BAT"><p><b>4 · La validation</b>Bas du Pré-BAT, bloc « Bon pour accord » : écrire, dater, signer.</p></div>
+</div>
+<figcaption>Les quatre écrans du parcours, dans l'ordre. <b>Chaque cadre porte le numéro de l'étape correspondante</b> — de quoi retrouver sa place sans chercher.</figcaption>
+</figure>
+
 </section>
 
 
@@ -379,6 +423,8 @@
 </tbody>
 </table>
 </section>
+
+
 
 <section class="g-sec">
 <h2>Où en est le dossier</h2>
