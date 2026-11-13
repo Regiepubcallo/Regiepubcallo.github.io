@@ -22,6 +22,10 @@
 .ctl .ctl-a{display:inline-block;margin-top:2px;font-size:13px;font-weight:900;color:#fff;background:#121212;padding:9px 14px;text-decoration:none;border:2px solid #121212}
 .ctl .ctl-a:hover{background:#E2001A;border-color:#E2001A}
 </style>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body data-page="depot">
 <a class="skip" href="#contenu">Aller au contenu</a>
@@ -33,7 +37,7 @@
 <section class="hero"><div>
 <div class="kicker">Espace de dépôt partenaire</div>
 <h1>Déposez votre bon de commande, votre encart et votre logo.</h1>
-<p>Trois fichiers obligatoires, un seul envoi. Dès que vous choisissez votre encart ou votre logo, la qualité graphique est contrôlée sous vos yeux : proportions, définition à 300 dpi. Nos professionnels s'occupent de la mise en page.</p>
+<p><b>Deux fichiers obligatoires</b> — votre bon de commande signé et votre encart — en un seul envoi. Le logo ne s'ajoute que si vous avez pris <b>l'offre partenaire</b> (logo sur les kakemonos 2027). Dès que vous choisissez un fichier, la qualité graphique est contrôlée sous vos yeux : proportions, définition à 300 dpi.</p>
 </div></section>
 <main id="contenu" class="wrap narrow">
 <div id="bloc-form"><form id="form-depot" class="card" novalidate>
@@ -52,11 +56,12 @@
 </select></label>
 <fieldset><legend>2 · Votre encart *</legend><p class="hint">PDF/X-1a ou PDF/X-4, CMJN, 300 dpi, fonds perdus 3 mm, marge de sécurité 5 mm. Nommage : Actualycee_Entreprise_Format_V1.</p>
 <input type="file" name="encart" accept=".pdf,.png,.jpg,.jpeg" aria-label="Votre encart"><div id="n-encart" class="hint" role="status"></div><div id="ctl-encart" class="ctl" hidden></div></fieldset>
-<fieldset><legend>3 · Votre logo *</legend><p class="hint">HD vectorisé (AI, EPS, SVG ou PDF), sinon image 300 dpi sur fond neutre. Il sera placé sur le kakemono 2027 à égale proportion des partenaires.</p>
+<fieldset><legend data-logo>3 · Votre logo <span style="font-weight:600;color:var(--muted)">(offre partenaire uniquement)</span></legend><p class="hint">À fournir seulement si vous avez pris l'offre partenaire : HD vectorisé (AI, EPS, SVG ou PDF), sinon image 300 dpi sur fond neutre. Il sera placé sur le kakemono 2027 à égale proportion des partenaires.</p>
 <input type="file" name="logo" accept=".ai,.eps,.svg,.pdf,.png" aria-label="Votre logo"><div id="n-logo" class="hint" role="status"></div><div id="ctl-logo" class="ctl" hidden></div></fieldset>
 <fieldset><legend>4 · Votre Pré-BAT signé <span style="font-weight:600;color:var(--muted)">(facultatif à ce stade)</span></legend><p class="hint">Si vous avez validé le Pré-BAT proposé ci-dessus, déposez-le ici : il est classé automatiquement dans votre dossier et horodaté. Formats PDF, JPG ou PNG.</p>
 <input type="file" name="bat" accept=".pdf,.jpg,.jpeg,.png" aria-label="Pré-BAT signé"><div id="n-bat" class="hint" role="status"></div></fieldset>
 <div id="err" class="error" role="alert"></div>
+<p class="hint" style="margin:0 0 10px">Total : bon de commande + encart, et le logo si offre partenaire. 20 Mo maximum pour l'ensemble.</p>
 <button id="envoyer" class="btn" type="submit">Envoyer mes documents</button>
 </form></div>
 <section id="bloc-merci" class="card success" hidden role="status">

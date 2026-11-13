@@ -218,14 +218,27 @@
       if (!f.entreprise.value.trim()) { err.textContent = 'Indiquez le nom de votre entreprise.'; f.entreprise.focus(); return; }
       if (!isEmail(f.mail.value.trim())) { err.textContent = 'Indiquez votre adresse e-mail (pour recevoir le BAT).'; f.mail.focus(); return; }
       var files = [], total = 0, k, file, ext;
-      var OBLIG = ['bon', 'encart', 'logo'];
+      // L'offre partenaire (p16, p14, p12) inclut le logo sur kakemono : le
+      // fichier logo n'est donc exigé que dans ce cas. Un encart seul se dépose
+      // avec deux fichiers.
+      var pack = /^p(16|14|12)$/.test((load().formatIds || [])[0] || '');
+      var OBLIG = pack ? ['bon', 'encart', 'logo'] : ['bon', 'encart'];
       for (var i = 0; i < OBLIG.length; i++) {
         k = OBLIG[i]; file = f[k].files[0];
-        if (!file) { err.textContent = 'Il manque un fichier : ' + { bon: 'le bon de commande signé', encart: 'votre encart', logo: 'votre logo' }[k] + '.'; return; }
+        if (!file) { err.textContent = 'Il manque un fichier : ' + { bon: 'le bon de commande signé', encart: 'votre encart', logo: 'votre logo (offre partenaire)' }[k] + '.'; return; }
         ext = (file.name.split('.').pop() || '').toLowerCase();
         if (EXT[k].indexOf(ext) < 0) { err.textContent = 'Format non accepté pour ' + k + ' (' + EXT[k].join(', ').toUpperCase() + ').'; return; }
         total += file.size; files.push({ k: k, file: file });
       }
+      // logo ou bon de commande fourni en plus : on l'envoie quand même
+      CHAMPS.forEach(function (kk) {
+        if (OBLIG.indexOf(kk) >= 0 || kk === 'bat') return;
+        var fi = f[kk] && f[kk].files[0];
+        if (!fi) return;
+        ext = (fi.name.split('.').pop() || '').toLowerCase();
+        if (EXT[kk].indexOf(ext) < 0) { err.textContent = 'Format non accepté pour ' + kk + '.'; return; }
+        total += fi.size; files.push({ k: kk, file: fi });
+      });
       if (f.bat && f.bat.files[0]) {
         var bat = f.bat.files[0], bext = (bat.name.split('.').pop() || '').toLowerCase();
         if (EXT.bat.indexOf(bext) < 0) { err.textContent = 'Format non accepté pour le BAT signé (PDF, JPG ou PNG).'; return; }
@@ -368,6 +381,15 @@
       controlerFichier(file, document.getElementById('format-encart').value)
         .then(function (r) { afficherControle(document.getElementById('ctl-encart'), r); });
     });
+    // le libellé du champ logo suit l'offre choisie
+    try {
+      var idz = load().formatIds || [];
+      if (/^p(16|14|12)$/.test(idz[0] || '')) {
+        var lg = document.querySelector('legend[data-logo]');
+        if (lg) lg.innerHTML = '3 · Votre logo * <span style="font-weight:600;color:var(--muted)">(offre partenaire)</span>';
+      }
+    } catch (e) {}
+
     if (f.logo) f.logo.addEventListener('change', function () {
       var file = f.logo.files[0];
       if (!file) return;
