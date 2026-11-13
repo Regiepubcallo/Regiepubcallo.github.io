@@ -1,0 +1,12 @@
+# Régie publicitaire Marcel Callo — saison 2027
+User-agent: *
+Allow: /
+
+# Outils de parcours : ouverts aux visiteurs, inutiles aux moteurs.
+Disallow: /depot.html
+Disallow: /merci.html
+Disallow: /merci-non.html
+Disallow: /prebat.html
+Disallow: /docs/bons-de-commande/
+
+Sitemap: https://regiepubcallo.github.io/sitemap.xml
