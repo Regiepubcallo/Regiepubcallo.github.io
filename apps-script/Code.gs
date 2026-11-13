@@ -426,7 +426,15 @@ function handleDepot_(b) {
       });
     } catch (err) { log_('ERREUR', email, 'Accusé non envoyé : ' + err); }
   }
-  return { ok: true };
+  // La réponse porte la référence et l'URL du dossier : le site peut les
+  // afficher, et le contrôle de bout en bout devient possible sans ouvrir
+  // le classeur.
+  return {
+    ok: true,
+    numero: get_(row, 'N° bon de commande') || '',
+    dossier: folder.getUrl(),
+    fichiers: files.length
+  };
 }
 
 // ===================== FEUILLE « SUIVI » =====================
